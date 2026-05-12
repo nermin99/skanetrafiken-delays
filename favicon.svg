@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- rounded red tile -->
+  <rect width="64" height="64" rx="14" fill="#e1251b"/>
+
+  <!-- train: front 3/4 silhouette in white -->
+  <!-- body -->
+  <path fill="#fff" d="M16 16h22a6 6 0 0 1 6 6v22a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V22a6 6 0 0 1 6-6Z"/>
+  <!-- windscreen -->
+  <path fill="#e1251b" d="M16 22h22v8a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2v-8Z"/>
+  <!-- headlights -->
+  <circle cx="16" cy="40" r="2.6" fill="#e1251b"/>
+  <circle cx="38" cy="40" r="2.6" fill="#e1251b"/>
+  <!-- wheel notches -->
+  <rect x="13" y="48" width="7" height="4" rx="2" fill="#e1251b"/>
+  <rect x="34" y="48" width="7" height="4" rx="2" fill="#e1251b"/>
+
+  <!-- clock badge: corner, white ring so it reads against red and train alike -->
+  <circle cx="46" cy="46" r="16" fill="#e1251b"/>
+  <circle cx="46" cy="46" r="13" fill="#fff"/>
+  <!-- hands ~ 10:08 -> "late" -->
+  <g stroke="#e1251b" stroke-width="3" stroke-linecap="round">
+    <line x1="46" y1="46" x2="46" y2="38"/>
+    <line x1="46" y1="46" x2="52.5" y2="48.5"/>
+  </g>
+  <circle cx="46" cy="46" r="2" fill="#e1251b"/>
+</svg>
