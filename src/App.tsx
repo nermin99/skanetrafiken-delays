@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { DelayQuery, Granularity, SortColumn, Station } from './types'
-import { todaySelections } from './lib/dates'
+import { isCurrentPeriod, todaySelections } from './lib/dates'
 import { DEFAULT_PAGE_SIZE } from './lib/pagination'
 import { cycleSort, sortDelays, type SortState } from './lib/sortDelays'
 import { useDelays } from './hooks/useDelays'
@@ -62,7 +62,12 @@ function App() {
 
         <Section title="View by">
           <div className="space-y-4">
-            <ViewBy granularity={granularity} onChange={setGranularity} onToday={handleToday} />
+            <ViewBy
+              granularity={granularity}
+              onChange={setGranularity}
+              onToday={handleToday}
+              isToday={isCurrentPeriod(query)}
+            />
             <DateNavigator
               key={navKey}
               granularity={granularity}

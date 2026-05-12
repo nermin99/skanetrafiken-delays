@@ -177,6 +177,18 @@ export function rangeForQuery(query: DelayQuery): { start: string; end: string }
   return { start: query.day, end: query.day }
 }
 
+/** True if the query's active period is the one containing today (this month/week/day). */
+export function isCurrentPeriod(query: DelayQuery): boolean {
+  const today = todaySelections()
+  if (query.granularity === 'months') {
+    return query.month.year === today.month.year && query.month.month === today.month.month
+  }
+  if (query.granularity === 'weeks') {
+    return query.week.year === today.week.year && query.week.week === today.week.week
+  }
+  return query.day === today.day
+}
+
 /** Human-readable description of the active period — used in the results header. */
 export function describePeriod(query: DelayQuery): string {
   if (query.granularity === 'months') return monthName(query.month.year, query.month.month)
