@@ -13,7 +13,7 @@ export function WeekPanel({
 }) {
   const weeks = weeksOverlappingMonth(display.year, display.month)
   return (
-    <div className="space-y-1">
+    <div className="flex h-full flex-col gap-1">
       {weeks.map((week) => {
         const active = selected.year === week.year && selected.week === week.week
         return (
@@ -23,7 +23,7 @@ export function WeekPanel({
             aria-pressed={active}
             onClick={() => onSelect(week)}
             className={[
-              'block w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors',
+              'flex-1 rounded-md px-3 py-1.5 text-left text-sm transition-colors',
               active
                 ? 'bg-brand font-medium text-white'
                 : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
