@@ -1,6 +1,7 @@
 import { CalendarClock } from 'lucide-react'
-import type { DelayQuery, DelayRecord, SortColumn, SortDir } from '../types'
+import type { DelayQuery, DelayRecord, SortColumn } from '../types'
 import { describePeriod } from '../lib/dates'
+import type { SortState } from '../lib/sortDelays'
 import { DelaysTable } from './DelaysTable'
 import { Pagination } from './Pagination'
 import { PerPageSelect } from './PerPageSelect'
@@ -14,8 +15,7 @@ export function DelaysSection({
   pageSize,
   onPageChange,
   onPageSizeChange,
-  sortColumn,
-  sortDir,
+  sort,
   onSort,
 }: {
   query: DelayQuery
@@ -25,8 +25,7 @@ export function DelaysSection({
   pageSize: number
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: number) => void
-  sortColumn: SortColumn
-  sortDir: SortDir
+  sort: SortState
   onSort: (column: SortColumn) => void
 }) {
   const pages = Math.max(1, Math.ceil(rows.length / pageSize))
@@ -60,7 +59,7 @@ export function DelaysSection({
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <DelaysTable rows={pageRows} sortColumn={sortColumn} sortDir={sortDir} onSort={onSort} />
+          <DelaysTable rows={pageRows} sort={sort} onSort={onSort} />
         </div>
       )}
     </div>

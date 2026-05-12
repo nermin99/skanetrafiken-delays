@@ -1,5 +1,8 @@
 import type { DelayRecord, SortColumn, SortDir } from '../types'
 
+/** Active sort, or `null` for the default ordering (date ascending, then time). */
+export type SortState = { column: SortColumn; dir: SortDir } | null
+
 function compareBy(a: DelayRecord, b: DelayRecord, column: SortColumn): number {
   switch (column) {
     case 'delayMinutes':
@@ -13,13 +16,22 @@ function compareBy(a: DelayRecord, b: DelayRecord, column: SortColumn): number {
   }
 }
 
+/** Next sort state when a column header is clicked: asc → desc → default (null). */
+export function cycleSort(current: SortState, column: SortColumn): SortState {
+  if (!current || current.column !== column) return { column, dir: 'asc' }
+  if (current.dir === 'asc') return { column, dir: 'desc' }
+  return null
+}
+
 /**
- * Stable sort of delay rows. Date→time is the canonical ordering: sorting by `date`
- * tiebreaks on `time`; sorting by any other column tiebreaks on `date` then `time`.
+ * Stable sort of delay rows. Date→time is the canonical ordering: with no active sort
+ * (or sorting by `date`) tiebreaks on `time`; sorting by any other column tiebreaks on
+ * `date` then `time`.
  */
-export function sortDelays(rows: readonly DelayRecord[], column: SortColumn, dir: SortDir): DelayRecord[] {
+export function sortDelays(rows: readonly DelayRecord[], sort: SortState): DelayRecord[] {
+  const column: SortColumn = sort?.column ?? 'date'
+  const sign: number = sort?.dir === 'desc' ? -1 : 1
   const tiebreakers: SortColumn[] = column === 'date' ? ['time'] : column === 'time' ? ['date'] : ['date', 'time']
-  const sign = dir === 'asc' ? 1 : -1
   return [...rows].sort((a, b) => {
     let cmp = compareBy(a, b, column)
     for (let i = 0; cmp === 0 && i < tiebreakers.length; i++) cmp = compareBy(a, b, tiebreakers[i])

@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react'
-import type { DelayRecord, SortColumn, SortDir } from '../types'
+import type { DelayRecord, SortColumn } from '../types'
 import { formatDayLabel } from '../lib/dates'
+import type { SortState } from '../lib/sortDelays'
 import { DelayBadge } from './DelayBadge'
 
 const COLUMNS: { key: SortColumn; label: string }[] = [
@@ -15,24 +16,22 @@ const COLUMNS: { key: SortColumn; label: string }[] = [
 function SortHeader({
   column,
   label,
-  sortColumn,
-  sortDir,
+  sort,
   onSort,
 }: {
   column: SortColumn
   label: string
-  sortColumn: SortColumn
-  sortDir: SortDir
+  sort: SortState
   onSort: (column: SortColumn) => void
 }) {
-  const active = sortColumn === column
-  const Icon = !active ? ChevronsUpDown : sortDir === 'asc' ? ChevronUp : ChevronDown
+  const active = sort?.column === column
+  const Icon = !active ? ChevronsUpDown : sort.dir === 'asc' ? ChevronUp : ChevronDown
   return (
     <th className="px-4 py-3 text-left font-medium text-zinc-500 dark:text-zinc-400">
       <button
         type="button"
         onClick={() => onSort(column)}
-        aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+        aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
         className="inline-flex items-center gap-1 transition-colors hover:text-zinc-800 dark:hover:text-zinc-100"
       >
         <span>{label}</span>
@@ -44,13 +43,11 @@ function SortHeader({
 
 export function DelaysTable({
   rows,
-  sortColumn,
-  sortDir,
+  sort,
   onSort,
 }: {
   rows: readonly DelayRecord[]
-  sortColumn: SortColumn
-  sortDir: SortDir
+  sort: SortState
   onSort: (column: SortColumn) => void
 }) {
   return (
@@ -58,14 +55,7 @@ export function DelaysTable({
       <thead>
         <tr className="border-b border-zinc-200 dark:border-zinc-700">
           {COLUMNS.map((c) => (
-            <SortHeader
-              key={c.key}
-              column={c.key}
-              label={c.label}
-              sortColumn={sortColumn}
-              sortDir={sortDir}
-              onSort={onSort}
-            />
+            <SortHeader key={c.key} column={c.key} label={c.label} sort={sort} onSort={onSort} />
           ))}
         </tr>
       </thead>

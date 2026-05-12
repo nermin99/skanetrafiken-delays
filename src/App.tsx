@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import type { DelayQuery, Granularity, SortColumn, SortDir, Station } from './types'
+import type { DelayQuery, Granularity, SortColumn, Station } from './types'
 import { todaySelections } from './lib/dates'
 import { DEFAULT_PAGE_SIZE } from './lib/pagination'
-import { sortDelays } from './lib/sortDelays'
+import { cycleSort, sortDelays, type SortState } from './lib/sortDelays'
 import { useDelays } from './hooks/useDelays'
 import { Header } from './components/Header'
 import { Section } from './components/Section'
@@ -20,18 +20,17 @@ function App() {
   const [selMonth, setSelMonth] = useState(initial.month)
   const [selWeek, setSelWeek] = useState(initial.week)
   const [selDay, setSelDay] = useState(initial.day)
-  const [sortColumn, setSortColumn] = useState<SortColumn>('date')
-  const [sortDir, setSortDir] = useState<SortDir>('asc')
+  const [sort, setSort] = useState<SortState>(null)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE)
   const [navKey, setNavKey] = useState(0)
 
   const query: DelayQuery = { stationA, stationB, granularity, month: selMonth, week: selWeek, day: selDay }
   const { rows, loading } = useDelays(query)
-  const sortedRows = sortDelays(rows, sortColumn, sortDir)
+  const sortedRows = sortDelays(rows, sort)
 
   // Pagination always starts at the first page when the query, sort, or page size changes.
-  const resetKey = `${JSON.stringify(query)}|${sortColumn}|${sortDir}|${pageSize}`
+  const resetKey = `${JSON.stringify(query)}|${JSON.stringify(sort)}|${pageSize}`
   const [seenResetKey, setSeenResetKey] = useState(resetKey)
   let currentPage = page
   if (seenResetKey !== resetKey) {
@@ -41,12 +40,7 @@ function App() {
   }
 
   function handleSort(column: SortColumn) {
-    if (column === sortColumn) {
-      setSortDir((dir) => (dir === 'asc' ? 'desc' : 'asc'))
-    } else {
-      setSortColumn(column)
-      setSortDir('asc')
-    }
+    setSort((current) => cycleSort(current, column))
   }
 
   function handleToday() {
@@ -91,8 +85,7 @@ function App() {
             pageSize={pageSize}
             onPageChange={setPage}
             onPageSizeChange={setPageSize}
-            sortColumn={sortColumn}
-            sortDir={sortDir}
+            sort={sort}
             onSort={handleSort}
           />
         </Section>
