@@ -39,6 +39,7 @@ function ArrowButton({
 function Panel({
   title,
   caption,
+  captionActive = false,
   onPrev,
   onNext,
   nextDisabled = false,
@@ -46,6 +47,8 @@ function Panel({
 }: {
   title: string
   caption: string
+  /** When true the picker is the one that drives the Delays table — its caption is emphasised. */
+  captionActive?: boolean
   onPrev: () => void
   onNext: () => void
   nextDisabled?: boolean
@@ -59,7 +62,12 @@ function Panel({
         <ArrowButton dir="next" onClick={onNext} disabled={nextDisabled} />
       </div>
       <div className="flex-1">{children}</div>
-      <div className="border-t border-zinc-100 pt-3 text-center text-xs text-zinc-400 dark:border-zinc-800 dark:text-zinc-500">
+      <div
+        className={[
+          'border-t border-zinc-100 pt-3 text-center text-xs dark:border-zinc-800',
+          captionActive ? 'font-medium text-brand' : 'text-zinc-400 dark:text-zinc-500',
+        ].join(' ')}
+      >
         {caption}
       </div>
     </div>
@@ -123,7 +131,8 @@ export function DateNavigator({
     <div className="flex flex-col divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-900">
       <Panel
         title={String(monthYear)}
-        caption="Select a month"
+        caption={granularity === 'months' ? 'Select a month' : 'Browse months'}
+        captionActive={granularity === 'months'}
         onPrev={() => setMonthYear((y) => y - 1)}
         onNext={() => setMonthYear((y) => y + 1)}
         nextDisabled={isYearInFuture(monthYear + 1)}
@@ -134,7 +143,8 @@ export function DateNavigator({
       {granularity !== 'months' && (
         <Panel
           title={monthName(weekMonth.year, weekMonth.month)}
-          caption="Select a week"
+          caption={granularity === 'weeks' ? 'Select a week' : 'Browse weeks'}
+          captionActive={granularity === 'weeks'}
           onPrev={() => setWeekMonth((m) => shiftMonth(m, -1))}
           onNext={() => setWeekMonth((m) => shiftMonth(m, 1))}
           nextDisabled={monthIsFuture(shiftMonth(weekMonth, 1))}
@@ -147,6 +157,7 @@ export function DateNavigator({
         <Panel
           title={monthName(dayMonth.year, dayMonth.month)}
           caption="Select a day"
+          captionActive
           onPrev={() => setDayMonth((m) => shiftMonth(m, -1))}
           onNext={() => setDayMonth((m) => shiftMonth(m, 1))}
           nextDisabled={monthIsFuture(shiftMonth(dayMonth, 1))}
