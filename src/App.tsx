@@ -25,7 +25,17 @@ function App() {
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE)
   const [navKey, setNavKey] = useState(0)
 
-  const query: DelayQuery = { stationA, stationB, granularity, month: selMonth, week: selWeek, day: selDay }
+  // Only the picker matching the active granularity feeds the query — flipping through the
+  // coarser pickers (e.g. browsing months/weeks while viewing by day) must not refetch the
+  // table. The inactive fields are pinned to a constant so they never perturb the query key.
+  const query: DelayQuery = {
+    stationA,
+    stationB,
+    granularity,
+    month: granularity === 'months' ? selMonth : initial.month,
+    week: granularity === 'weeks' ? selWeek : initial.week,
+    day: granularity === 'days' ? selDay : initial.day,
+  }
   const { rows, loading } = useDelays(query)
   const sortedRows = sortDelays(rows, sort)
 

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { DaySel, Granularity, MonthSel, WeekSel } from '../types'
 import type { WeekRow } from '../lib/dates'
-import { isMonthInFuture, isYearInFuture, monthName, parseISODate } from '../lib/dates'
+import { getISOWeek, getISOWeekYear, isMonthInFuture, isYearInFuture, monthName, parseISODate } from '../lib/dates'
 import { MonthPanel } from './MonthPanel'
 import { WeekPanel } from './WeekPanel'
 import { DayPanel } from './DayPanel'
@@ -87,6 +87,9 @@ export function DateNavigator({
   const [weekMonth, setWeekMonth] = useState<MonthSel>({ year: selMonth.year, month: selMonth.month })
   const [dayMonth, setDayMonth] = useState<MonthSel>({ year: selMonth.year, month: selMonth.month })
 
+  // The pickers form a chain: choosing a value snaps every other picker to the period that
+  // contains it — coarser pickers downwards (which month/week is shown), finer pickers upwards
+  // (which week/month is shown *and* highlighted as selected).
   function pickMonth(month: number) {
     const sel = { year: monthYear, month }
     onSelectMonth(sel)
@@ -96,13 +99,20 @@ export function DateNavigator({
 
   function pickWeek(week: WeekRow) {
     onSelectWeek({ year: week.year, week: week.week })
+    onSelectMonth(weekMonth)
+    setMonthYear(weekMonth.year)
     setDayMonth({ year: week.start.getFullYear(), month: week.start.getMonth() })
   }
 
   function pickDay(iso: string) {
     onSelectDay(iso)
     const d = parseISODate(iso)
-    setDayMonth({ year: d.getFullYear(), month: d.getMonth() })
+    const m = { year: d.getFullYear(), month: d.getMonth() }
+    onSelectWeek({ year: getISOWeekYear(d), week: getISOWeek(d) })
+    onSelectMonth(m)
+    setMonthYear(m.year)
+    setWeekMonth(m)
+    setDayMonth(m)
   }
 
   // "Next" is disabled once stepping forward would land on a period that lies
