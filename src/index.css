@@ -12,6 +12,21 @@ html {
   color-scheme: light dark;
 }
 
+/* Tailwind's reset (and modern browsers) leave buttons with the default arrow
+   cursor. Restore the pointer for anything clickable; disabled controls keep
+   the not-allowed cursor. */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='option']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role='button'][aria-disabled='true'],
+[role='option'][aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
