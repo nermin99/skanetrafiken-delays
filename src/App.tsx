@@ -76,7 +76,7 @@ function App() {
               granularity={granularity}
               onChange={setGranularity}
               onToday={handleToday}
-              isToday={isCurrentPeriod(query)}
+              isToday={granularity === 'days' && isCurrentPeriod(query)}
             />
             <DateNavigator
               key={navKey}
