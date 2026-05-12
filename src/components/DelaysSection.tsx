@@ -59,15 +59,9 @@ export function DelaysSection({
           There are no delays for the selected time period.
         </p>
       ) : (
-        <>
-          <div className="overflow-x-auto">
-            <DelaysTable rows={pageRows} sortColumn={sortColumn} sortDir={sortDir} onSort={onSort} />
-          </div>
-          <div className="flex flex-wrap items-center justify-end gap-4 border-t border-zinc-200 px-4 py-3 dark:border-zinc-700">
-            <PerPageSelect value={pageSize} onChange={onPageSizeChange} />
-            <Pagination page={safePage} pages={pages} onChange={onPageChange} />
-          </div>
-        </>
+        <div className="overflow-x-auto">
+          <DelaysTable rows={pageRows} sortColumn={sortColumn} sortDir={sortDir} onSort={onSort} />
+        </div>
       )}
     </div>
   )
