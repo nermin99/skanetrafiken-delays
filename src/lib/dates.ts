@@ -123,6 +123,37 @@ export function formatDayLabel(iso: string): string {
   return `${MONTH_NAMES[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
 }
 
+/**
+ * Future-period guards. This site only has historic delay data through today,
+ * so anything that lies entirely after today is not selectable. A period that
+ * *contains* today (the current month/week/day) is allowed.
+ */
+
+function startOfToday(): Date {
+  const now = new Date()
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate())
+}
+
+/** True if the calendar month starts after today (i.e. the whole month is in the future). */
+export function isMonthInFuture(year: number, month: number): boolean {
+  return new Date(year, month, 1).getTime() > startOfToday().getTime()
+}
+
+/** True if the calendar year is later than the current year. */
+export function isYearInFuture(year: number): boolean {
+  return year > new Date().getFullYear()
+}
+
+/** True if the ISO week's Monday is after today (i.e. the whole week is in the future). */
+export function isWeekInFuture(year: number, week: number): boolean {
+  return startOfISOWeekByNumber(year, week).getTime() > startOfToday().getTime()
+}
+
+/** True if a `yyyy-mm-dd` day is strictly after today. */
+export function isDayInFuture(iso: string): boolean {
+  return parseISODate(iso).getTime() > startOfToday().getTime()
+}
+
 export function todaySelections() {
   const now = new Date()
   return {

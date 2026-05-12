@@ -1,5 +1,5 @@
 import type { DaySel, MonthSel } from '../types'
-import { monthGrid, toISODate } from '../lib/dates'
+import { isDayInFuture, monthGrid, toISODate } from '../lib/dates'
 
 const WEEKDAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 
@@ -28,19 +28,23 @@ export function DayPanel({
           const inMonth = date.getMonth() === display.month
           const isSelected = iso === selected
           const isToday = iso === todayIso
+          const disabled = isDayInFuture(iso)
           return (
             <button
               key={iso}
               type="button"
               aria-pressed={isSelected}
+              disabled={disabled}
               onClick={() => onSelect(iso)}
               className={[
                 'h-9 rounded-md text-sm transition-colors',
-                isSelected
-                  ? 'bg-brand font-medium text-white'
-                  : inMonth
-                    ? 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800'
-                    : 'text-zinc-300 hover:bg-zinc-100 dark:text-zinc-600 dark:hover:bg-zinc-800',
+                disabled
+                  ? 'text-zinc-300 dark:text-zinc-700'
+                  : isSelected
+                    ? 'bg-brand font-medium text-white'
+                    : inMonth
+                      ? 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800'
+                      : 'text-zinc-300 hover:bg-zinc-100 dark:text-zinc-600 dark:hover:bg-zinc-800',
                 isToday && !isSelected ? 'ring-1 ring-brand ring-inset' : '',
               ].join(' ')}
             >

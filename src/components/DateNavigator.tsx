@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { DaySel, Granularity, MonthSel, WeekSel } from '../types'
 import type { WeekRow } from '../lib/dates'
-import { monthName, parseISODate } from '../lib/dates'
+import { isMonthInFuture, isYearInFuture, monthName, parseISODate } from '../lib/dates'
 import { MonthPanel } from './MonthPanel'
 import { WeekPanel } from './WeekPanel'
 import { DayPanel } from './DayPanel'
@@ -13,14 +13,23 @@ function shiftMonth(m: MonthSel, delta: number): MonthSel {
   return { year: d.getFullYear(), month: d.getMonth() }
 }
 
-function ArrowButton({ onClick, dir }: { onClick: () => void; dir: 'prev' | 'next' }) {
+function ArrowButton({
+  onClick,
+  dir,
+  disabled = false,
+}: {
+  onClick: () => void
+  dir: 'prev' | 'next'
+  disabled?: boolean
+}) {
   const Icon = dir === 'prev' ? ChevronLeft : ChevronRight
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-label={dir === 'prev' ? 'Previous' : 'Next'}
-      className="rounded-md p-1 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+      className="rounded-md p-1 text-zinc-500 transition-colors enabled:hover:bg-zinc-100 enabled:hover:text-zinc-800 disabled:opacity-30 dark:text-zinc-400 dark:enabled:hover:bg-zinc-800 dark:enabled:hover:text-zinc-100"
     >
       <Icon size={20} aria-hidden />
     </button>
@@ -32,12 +41,14 @@ function Panel({
   caption,
   onPrev,
   onNext,
+  nextDisabled = false,
   children,
 }: {
   title: string
   caption: string
   onPrev: () => void
   onNext: () => void
+  nextDisabled?: boolean
   children: ReactNode
 }) {
   return (
@@ -45,7 +56,7 @@ function Panel({
       <div className="flex items-center justify-between gap-2">
         <ArrowButton dir="prev" onClick={onPrev} />
         <span className="text-sm font-medium text-zinc-800 dark:text-zinc-100">{title}</span>
-        <ArrowButton dir="next" onClick={onNext} />
+        <ArrowButton dir="next" onClick={onNext} disabled={nextDisabled} />
       </div>
       <div className="flex-1">{children}</div>
       <div className="border-t border-zinc-100 pt-3 text-center text-xs text-zinc-400 dark:border-zinc-800 dark:text-zinc-500">
@@ -94,6 +105,10 @@ export function DateNavigator({
     setDayMonth({ year: d.getFullYear(), month: d.getMonth() })
   }
 
+  // "Next" is disabled once stepping forward would land on a period that lies
+  // entirely after today — there's no historic data there.
+  const monthIsFuture = (m: MonthSel) => isMonthInFuture(m.year, m.month)
+
   return (
     <div className="flex flex-col divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-900">
       <Panel
@@ -101,6 +116,7 @@ export function DateNavigator({
         caption="Select a month"
         onPrev={() => setMonthYear((y) => y - 1)}
         onNext={() => setMonthYear((y) => y + 1)}
+        nextDisabled={isYearInFuture(monthYear + 1)}
       >
         <MonthPanel year={monthYear} selected={selMonth} onSelect={pickMonth} />
       </Panel>
@@ -111,6 +127,7 @@ export function DateNavigator({
           caption="Select a week"
           onPrev={() => setWeekMonth((m) => shiftMonth(m, -1))}
           onNext={() => setWeekMonth((m) => shiftMonth(m, 1))}
+          nextDisabled={monthIsFuture(shiftMonth(weekMonth, 1))}
         >
           <WeekPanel display={weekMonth} selected={selWeek} onSelect={pickWeek} />
         </Panel>
@@ -122,6 +139,7 @@ export function DateNavigator({
           caption="Select a day"
           onPrev={() => setDayMonth((m) => shiftMonth(m, -1))}
           onNext={() => setDayMonth((m) => shiftMonth(m, 1))}
+          nextDisabled={monthIsFuture(shiftMonth(dayMonth, 1))}
         >
           <DayPanel display={dayMonth} selected={selDay} onSelect={pickDay} />
         </Panel>

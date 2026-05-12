@@ -1,5 +1,5 @@
 import type { MonthSel } from '../types'
-import { monthAbbr } from '../lib/dates'
+import { isMonthInFuture, monthAbbr } from '../lib/dates'
 
 export function MonthPanel({
   year,
@@ -15,17 +15,21 @@ export function MonthPanel({
       <div className="grid w-full grid-cols-4 gap-2">
         {Array.from({ length: 12 }, (_, month) => {
           const active = selected.year === year && selected.month === month
+          const disabled = isMonthInFuture(year, month)
           return (
             <button
               key={month}
               type="button"
               aria-pressed={active}
+              disabled={disabled}
               onClick={() => onSelect(month)}
               className={[
                 'h-14 rounded-md text-sm transition-colors',
-                active
-                  ? 'bg-brand font-medium text-white'
-                  : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
+                disabled
+                  ? 'text-zinc-300 dark:text-zinc-600'
+                  : active
+                    ? 'bg-brand font-medium text-white'
+                    : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
               ].join(' ')}
             >
               {monthAbbr(month)}
