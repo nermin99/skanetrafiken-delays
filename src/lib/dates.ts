@@ -37,10 +37,10 @@ export function parseISODate(iso: string): Date {
 /** ISO-8601 week number (1–53). */
 export function getISOWeek(date: Date): number {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
-  // Shift to the Thursday of this week — its calendar year is the ISO year.
-  d.setUTCDate(d.getUTCDate() + 3 - ((d.getUTCDay() + 6) % 7))
-  const week1 = new Date(Date.UTC(d.getUTCFullYear(), 0, 4))
-  return 1 + Math.round((d.getTime() - week1.getTime()) / DAY_MS / 7 - ((week1.getUTCDay() + 6) % 7) / 7)
+  // Shift to the Thursday of this week — its calendar year is the ISO week-year.
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7))
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / DAY_MS + 1) / 7)
 }
 
 /** ISO-8601 week-numbering year (may differ from the calendar year near year boundaries). */
