@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { DelayQuery, DelayRecord } from '../types'
-import { fetchDelays } from '../data/mockApi'
+import { fetchDelays } from '../data/delaysApi'
 
 export function useDelays(query: DelayQuery): { rows: DelayRecord[]; loading: boolean } {
   const key = JSON.stringify(query)

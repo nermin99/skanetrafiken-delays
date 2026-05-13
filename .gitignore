@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Amplify Gen 2 workspace (generated outputs / artifacts)
+.amplify
+
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

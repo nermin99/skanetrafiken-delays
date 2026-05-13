@@ -17,12 +17,15 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
+    "aws-amplify": "^6.17.0",
     "lucide-react": "^1.14.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
+    "@aws-amplify/backend": "^1.22.0",
+    "@aws-amplify/backend-cli": "^1.8.2",
     "@babel/core": "^7.29.0",
     "@eslint/js": "^10.0.1",
     "@rolldown/plugin-babel": "^0.2.3",
