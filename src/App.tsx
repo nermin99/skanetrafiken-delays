@@ -14,8 +14,8 @@ import { DelaysSection } from './components/DelaysSection'
 const initial = todaySelections()
 
 function App() {
-  const [stationA, setStationA] = useState<Station>('Malmö C')
-  const [stationB, setStationB] = useState<Station>('Köpenhamn H')
+  const [stationA, setStationA] = useState<Station>('Burlöv')
+  const [stationB, setStationB] = useState<Station>('Köpenhamn Østerport')
   const [ignoreDirection, setIgnoreDirection] = useState(true)
   const [includeIntermediate, setIncludeIntermediate] = useState(true)
   const [granularity, setGranularity] = useState<Granularity>('days')
