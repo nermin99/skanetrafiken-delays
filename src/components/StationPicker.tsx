@@ -6,13 +6,17 @@ import { StationSelect } from './StationSelect'
 export function StationPicker({
   stationA,
   stationB,
+  ignoreDirection,
   onChangeA,
   onChangeB,
+  onChangeIgnoreDirection,
 }: {
   stationA: Station
   stationB: Station
+  ignoreDirection: boolean
   onChangeA: (value: Station) => void
   onChangeB: (value: Station) => void
+  onChangeIgnoreDirection: (value: boolean) => void
 }) {
   const handleSwap = () => {
     onChangeA(stationB)
@@ -40,16 +44,27 @@ export function StationPicker({
             disabledOption={stationA}
           />
         </div>
-        <button
-          type="button"
-          onClick={handleSwap}
-          aria-label="Swap stations"
-          title="Swap stations"
-          className="rounded-full border border-zinc-300 bg-white p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        >
-          <ArrowUpDown className="h-5 w-5" />
-        </button>
+        {!ignoreDirection && (
+          <button
+            type="button"
+            onClick={handleSwap}
+            aria-label="Swap stations"
+            title="Swap stations"
+            className="rounded-full border border-zinc-300 bg-white p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            <ArrowUpDown className="h-5 w-5" />
+          </button>
+        )}
       </div>
+      <label className="flex max-w-xl cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+        <input
+          type="checkbox"
+          checked={ignoreDirection}
+          onChange={(e) => onChangeIgnoreDirection(e.target.checked)}
+          className="h-4 w-4 rounded border-zinc-300 accent-brand dark:border-zinc-600"
+        />
+        Ignore direction (show delays between the stations either way)
+      </label>
     </div>
   )
 }

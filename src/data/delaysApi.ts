@@ -13,24 +13,33 @@ export async function fetchDelays(query: DelayQuery): Promise<DelayRecord[]> {
   if (query.stationA === query.stationB) return []
 
   const { start, end } = rangeForQuery(query)
-  const routeId = routeIdFor(query.stationA, query.stationB)
+  const routeIds = query.ignoreDirection
+    ? [routeIdFor(query.stationA, query.stationB), routeIdFor(query.stationB, query.stationA)]
+    : [routeIdFor(query.stationA, query.stationB)]
 
-  const { data, errors } = await client.models.Delay.listDelaysByRouteAndDate({
-    routeId,
-    date: { between: [start, end] },
-  })
+  const responses = await Promise.all(
+    routeIds.map((routeId) =>
+      client.models.Delay.listDelaysByRouteAndDate({
+        routeId,
+        date: { between: [start, end] },
+      }),
+    ),
+  )
 
-  if (errors?.length) {
+  const errors = responses.flatMap((r) => r.errors ?? [])
+  if (errors.length) {
     throw new Error(errors.map((e) => e.message).join('; '))
   }
 
-  return data.map((d) => ({
-    id: d.id,
-    date: d.date,
-    time: d.time,
-    trainNumber: d.trainNumber,
-    origin: d.origin as Station,
-    destination: d.destination as Station,
-    delayMinutes: d.delayMinutes,
-  }))
+  return responses
+    .flatMap((r) => r.data)
+    .map((d) => ({
+      id: d.id,
+      date: d.date,
+      time: d.time,
+      trainNumber: d.trainNumber,
+      origin: d.origin as Station,
+      destination: d.destination as Station,
+      delayMinutes: d.delayMinutes,
+    }))
 }

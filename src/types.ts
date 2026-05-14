@@ -16,6 +16,7 @@ export type DaySel = string
 export type DelayQuery = {
   stationA: Station
   stationB: Station
+  ignoreDirection: boolean
   granularity: Granularity
   month: MonthSel
   week: WeekSel

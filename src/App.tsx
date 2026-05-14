@@ -16,6 +16,7 @@ const initial = todaySelections()
 function App() {
   const [stationA, setStationA] = useState<Station>('Malmö C')
   const [stationB, setStationB] = useState<Station>('Köpenhamn H')
+  const [ignoreDirection, setIgnoreDirection] = useState(true)
   const [granularity, setGranularity] = useState<Granularity>('days')
   const [selMonth, setSelMonth] = useState(initial.month)
   const [selWeek, setSelWeek] = useState(initial.week)
@@ -31,6 +32,7 @@ function App() {
   const query: DelayQuery = {
     stationA,
     stationB,
+    ignoreDirection,
     granularity,
     month: granularity === 'months' ? selMonth : initial.month,
     week: granularity === 'weeks' ? selWeek : initial.week,
@@ -67,7 +69,14 @@ function App() {
       <Header />
       <main className="mx-auto max-w-[1126px] space-y-10 px-6 py-8">
         <Section title="Select stations">
-          <StationPicker stationA={stationA} stationB={stationB} onChangeA={setStationA} onChangeB={setStationB} />
+          <StationPicker
+            stationA={stationA}
+            stationB={stationB}
+            ignoreDirection={ignoreDirection}
+            onChangeA={setStationA}
+            onChangeB={setStationB}
+            onChangeIgnoreDirection={setIgnoreDirection}
+          />
         </Section>
 
         <Section title="View by">
