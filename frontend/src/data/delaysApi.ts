@@ -42,8 +42,8 @@ export async function fetchDelays(query: DelayQuery): Promise<DelayRecord[]> {
       client.models.Delay.listDelaysByRouteAndDate({
         routeId,
         date: { between: [start, end] },
-      }),
-    ),
+      })
+    )
   )
 
   const errors = responses.flatMap((r) => r.errors ?? [])
