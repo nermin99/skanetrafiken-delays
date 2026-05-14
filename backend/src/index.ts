@@ -1,0 +1,394 @@
+import type { Journey, JourneyResponse } from './types/api'
+
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, BatchWriteCommand } = require('@aws-sdk/lib-dynamodb')
+const dotenv = require('dotenv')
+dotenv.config()
+
+let client
+if (process.env.NODE_ENV !== 'production') {
+  client = new DynamoDBClient({
+    region: 'eu-north-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  })
+} else {
+  client = new DynamoDBClient({ region: 'eu-north-1' })
+}
+const docClient = DynamoDBDocumentClient.from(client)
+
+const DYNAMODB_TABLE_NAME = 'skanetrafiken-delays'
+const MIN_DELAY_MINUTES = 20
+
+const BASE_NEGATIVE = '../skanetrafiken-api/example-responses/negative/'
+const BASE_POSITIVE = '../skanetrafiken-api/example-responses/positive/'
+
+interface StationPoint {
+  point: string
+  station: string
+  country: string
+}
+
+const stationPoints: StationPoint[] = [
+  {
+    point: '9021012031031000',
+    station: 'Burlöv',
+    country: 'sweden',
+  },
+  {
+    point: '9021012080000000',
+    station: 'Malmö C',
+    country: 'sweden',
+  },
+  {
+    point: '9021012080140000',
+    station: 'Malmö Triangeln',
+    country: 'sweden',
+  },
+  {
+    point: '9021012080040000',
+    station: 'Malmö Hyllie',
+    country: 'sweden',
+  },
+  {
+    point: '9021012045006000',
+    station: 'CPH Airport Kastrup',
+    country: 'denmark',
+  },
+  {
+    point: '9021012045008000',
+    station: 'Tårnby',
+    country: 'denmark',
+  },
+  {
+    point: '9021012045005000',
+    station: 'Ørestad',
+    country: 'denmark',
+  },
+  {
+    point: '9021012045007000',
+    station: 'Köpenhamn H',
+    country: 'denmark',
+  },
+  {
+    point: '9021012045012000',
+    station: 'Köpenhamn Nørreport',
+    country: 'denmark',
+  },
+  {
+    point: '9021012045011000',
+    station: 'Köpenhamn Østerport',
+    country: 'denmark',
+  },
+]
+
+const stations = stationPoints.map(({ station }) => station)
+const points = stationPoints.map(({ point }) => point)
+const stationToPointMap = Object.fromEntries(stationPoints.map(({ point, station }) => [station, point]))
+const pointToStationMap = Object.fromEntries(stationPoints.map(({ point, station }) => [point, station]))
+const adjacentStations = stationPoints.slice(0, -1).map((current, index) => ({
+  stationA: current.station,
+  stationB: stationPoints[index + 1].station,
+}))
+const adjacentStationsReversed = adjacentStations
+  .map((pair) => ({ stationA: pair.stationB, stationB: pair.stationA }))
+  .toReversed()
+const allCombinationsStations = stations.flatMap((stationA, i) =>
+  stations.slice(i + 1).map((stationB) => ({ stationA, stationB }))
+)
+const allCombinationsStationsReversed = stations
+  .toReversed()
+  .flatMap((stationA, i) => stations.slice(i + 1).map((stationB) => ({ stationA, stationB })))
+const countryCombinationsStations = stationPoints.flatMap((stationA) =>
+  stationPoints
+    .filter((stationB) => stationA.country !== stationB.country)
+    .map((stationB) => ({
+      stationA: stationA.station,
+      stationB: stationB.station,
+    }))
+)
+
+const allTrips = countryCombinationsStations
+
+// console.log(stations)
+// console.log(points)
+// console.log(stationToPointMap['Malmö C'])
+// console.log(pointToStationMap['9021012080000000'])
+// console.log(adjacentStations, adjacentStations.length)
+// console.log(adjacentStationsReversed, adjacentStationsReversed.length)
+// console.log(allCombinationsStations, allCombinationsStations.length)
+// console.log(allCombinationsStationsReversed, allCombinationsStationsReversed.length)
+// console.log(countryCombinationsStations, countryCombinationsStations.length)
+// console.log(allTrips.length)
+
+// Utils -----------------------------------------------------------------------
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
+
+/**
+ * @param timeStr HH:MM
+ * @param dateStr YYYY-MM-DD
+ */
+const createDateTime = (timeStr = '', dateStr = '') => {
+  if (!dateStr && !timeStr) return new Date()
+
+  if (!dateStr) {
+    dateStr = new Date().toISOString().split('T')[0]
+  }
+
+  return new Date(`${dateStr}T${timeStr}`)
+}
+
+const getCurrentDateTimeFlooredWithDelay = (hoursDelay = 2) => {
+  const now = new Date()
+
+  const delayed = new Date(now.getTime() - hoursDelay * 60 * 60 * 1000)
+  delayed.setUTCMinutes(0, 0, 0)
+
+  return delayed
+}
+
+const getCurrentLocaleDateTimeISOString = (offsetInMs = 0) =>
+  new Date(Date.now() + offsetInMs)
+    .toLocaleString('sv-SE', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      fractionalSecondDigits: 3,
+    })
+    .replace(',', '.')
+    .replace(' ', 'T')
+
+const keepMaxByProperty = (arr: any[], groupByKey: string, maxByKey: string) => {
+  return Object.values(
+    arr.reduce((acc, curr) => {
+      const existing = acc[curr[groupByKey]]
+
+      if (!existing) {
+        acc[curr[groupByKey]] = curr
+      } else if (curr.isCancelled) {
+        acc[curr[groupByKey]] = curr
+      } else if (curr[maxByKey] >= existing[maxByKey]) {
+        acc[curr[groupByKey]] = curr
+      }
+
+      return acc
+    }, {})
+  )
+}
+
+// API -------------------------------------------------------------------------
+const BASE_URL = 'https://www.skanetrafiken.se/gw-tps/api/v2'
+const requestOptions = {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Search-Engine-Environment': 'TjP',
+    'User-Agent':
+      'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.80 Mobile Safari/537.36',
+  },
+}
+
+async function fetchJourneys(stationA: string, stationB: string, journeyDateTime: Date, event: any) {
+  if (event?.MOCK_RESPONSE) return event.MOCK_RESPONSE as JourneyResponse
+
+  const url = new URL(`${BASE_URL}/Journey`)
+  url.searchParams.set('fromPointType', 'STOP_AREA')
+  url.searchParams.set('toPointType', 'STOP_AREA')
+  url.searchParams.set('journeyDateTime', journeyDateTime.toISOString())
+  url.searchParams.set('fromPointId', stationToPointMap[stationA])
+  url.searchParams.set('toPointId', stationToPointMap[stationB])
+  url.searchParams.set('journeysAfter', '8')
+  console.info(url.toString())
+
+  const response = await fetch(url, requestOptions)
+  const data = await response.json()
+  // console.dir(data, { depth: null })
+
+  if (!data.journeys) {
+    throw new Error(`No journeys found for stations ${stationA} to ${stationB} at ${journeyDateTime}`)
+  }
+
+  return data as JourneyResponse
+}
+
+// Core Logic ------------------------------------------------------------------
+const findEligibleDelayedJourneys = (journeys: Journey[]) => {
+  const eligibleDelayedJourneys = []
+
+  // TODO: Filter out journeys with stations that are not in the original search (seems to be a bug in the API that it sometimes returns journeys with other stations)
+  const journeysFiltered = journeys.toSorted(sortJourneysByFromTimeAscending)
+
+  for (let idx = 0; idx < journeysFiltered.length; idx++) {
+    const journey1 = journeysFiltered[idx]
+    const journey2 = journeysFiltered[idx + 1]
+    const journey3 = journeysFiltered?.[idx + 2]
+
+    // Exit if reached end of array
+    if (!journey3) break
+
+    // Check first journey
+    let isStillCandidate = isCancelledOrSufficientlyDelayed(journey1, MIN_DELAY_MINUTES)
+    if (!isStillCandidate) continue
+
+    // Check second journey
+    const arrivalTimeDiff1to2 = calculateArrivalTimeDiff(journey1, journey2)
+    const requiredDelay2 = Math.max(0, MIN_DELAY_MINUTES - arrivalTimeDiff1to2)
+    isStillCandidate = isCancelledOrSufficientlyDelayed(journey2, requiredDelay2)
+    if (!isStillCandidate) continue
+
+    // Check third journey
+    const arrivalTimeDiff1to3 = calculateArrivalTimeDiff(journey1, journey3)
+    const requiredDelay3 = Math.max(0, MIN_DELAY_MINUTES - arrivalTimeDiff1to3)
+    isStillCandidate = isCancelledOrSufficientlyDelayed(journey3, requiredDelay3)
+
+    if (isStillCandidate) {
+      const totalDelay = calculateTotalDelay([journey1, journey2, journey3], [arrivalTimeDiff1to2, arrivalTimeDiff1to3])
+      eligibleDelayedJourneys.push({
+        journey: journey1,
+        totalDelay,
+      })
+    }
+  }
+
+  return eligibleDelayedJourneys
+}
+
+const sortJourneysByFromTimeAscending = (a: Journey, b: Journey) =>
+  new Date(a.routeLinks[0].from.time).getTime() - new Date(b.routeLinks[0].from.time).getTime()
+
+const isCancelledOrSufficientlyDelayed = (journey: Journey, minDelay: number): boolean => {
+  if (isCancelled(journey)) return true
+
+  const delay = journey.routeLinks[0].to.deviation ?? 0
+  return delay >= minDelay
+}
+
+const isCancelled = (journey: Journey): boolean =>
+  ['INSTÄLLD', 'CANCELLED'].includes(journey.deviationTag?.text?.toUpperCase() ?? '')
+
+const calculateArrivalTimeDiff = (journey1: Journey, journey2: Journey): number => {
+  const time1 = new Date(journey1.routeLinks[0].to.time).getTime()
+  const time2 = new Date(journey2.routeLinks[0].to.time).getTime()
+  return (time2 - time1) / (1000 * 60) // Convert milliseconds to minutes
+}
+
+const calculateTotalDelay = (journeys: Journey[], arrivalTimeDiffs: number[]): number => {
+  const [journey1, journey2, journey3] = journeys
+  const [arrivalTimeDiff1to2, arrivalTimeDiff1to3] = arrivalTimeDiffs
+
+  const journey1Delay = journey1.routeLinks[0].to.deviation ?? 0
+  const journey2Delay = journey2.routeLinks[0].to.deviation ?? 0
+  const journey3Delay = journey3.routeLinks[0].to.deviation ?? 0
+
+  if (!isCancelled(journey1)) return journey1Delay
+
+  if (!isCancelled(journey2)) return journey2Delay + arrivalTimeDiff1to2
+
+  if (!isCancelled(journey3)) return journey3Delay + arrivalTimeDiff1to3
+
+  return -arrivalTimeDiff1to3 // TODO: All three journeys cancelled
+}
+
+// Lambda handler --------------------------------------------------------------
+const handler = async (event: any) => {
+  console.info({ event })
+
+  const eligibleDelayedJourneys = []
+
+  const journeyDateTime = event?.TIME ?? getCurrentDateTimeFlooredWithDelay()
+
+  let tripCount = 1
+  for (const { stationA, stationB } of allTrips) {
+    console.log(`${tripCount}/${allTrips.length}`)
+
+    const journeyResponse = await fetchJourneys(stationA, stationB, journeyDateTime, event)
+    const delayedJourneys = findEligibleDelayedJourneys(journeyResponse.journeys)
+
+    if (delayedJourneys.length > 0) {
+      eligibleDelayedJourneys.push({
+        usedSearchTime: journeyResponse.usedSearchTime,
+        journeys: delayedJourneys,
+      })
+    }
+
+    // Rate limiting
+    await sleep(250)
+    tripCount++
+
+    if (event?.MOCK_RESPONSE) break
+  }
+
+  const delayedJourneysMapped = eligibleDelayedJourneys.flatMap(({ usedSearchTime, journeys }, i) =>
+    journeys.map(({ journey, totalDelay }, j) => {
+      const journeyData = journey.routeLinks[0]
+
+      const fromTime = journeyData.from.time
+      const toTime = journeyData.to.time
+      const applyDate = new Date(fromTime).toLocaleDateString('sv-SE')
+      const applyTime = new Date(fromTime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
+
+      return {
+        date: applyDate,
+        datetime: getCurrentLocaleDateTimeISOString(i * eligibleDelayedJourneys.length + j), // TODO: Fix off-by-1 error
+        '1_applyTime': applyTime,
+        '2_totalDelay': totalDelay,
+        '3_fromStation': pointToStationMap[journeyData.from.id2],
+        '4_toStation': pointToStationMap[journeyData.to.id2],
+        '5_trainNr': journeyData.line.runNo,
+        '6_isCancelled': isCancelled(journey),
+        '7_fromTime': fromTime,
+        '8_toTime': toTime,
+      }
+    })
+  )
+
+  const delayedJourneysGrouped = keepMaxByProperty(delayedJourneysMapped, 'trainNr', 'delay')
+  console.info(delayedJourneysGrouped.length)
+
+  if (delayedJourneysGrouped.length === 0) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'No delays found' }),
+    }
+  }
+
+  if (event?.ENV === 'DEV') return delayedJourneysGrouped
+
+  const upsertParams = {
+    RequestItems: {
+      [DYNAMODB_TABLE_NAME]: delayedJourneysGrouped.map((item) => ({
+        PutRequest: {
+          Item: item,
+        },
+      })),
+    },
+  }
+  const upsertResponse = await docClient.send(new BatchWriteCommand(upsertParams))
+
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify(upsertResponse),
+  }
+  return response
+}
+
+// If running locally (not in Lambda)
+if (require.main === module) {
+  const event: any = {}
+  event['ENV'] = process.env.ENV
+  event['TIME'] = process.env.TIME ? createDateTime(process.env.TIME) : null
+  event['MOCK_RESPONSE'] = process.env.MOCK ? require(BASE_POSITIVE + '9-multiple-delayed.json') : null
+
+  handler(event)
+    .then((result) => console.log('Result:', result))
+    .catch((err) => console.error('Error:', err))
+}
+
+// For unit tests
+exports.findEligibleDelayedJourneys = findEligibleDelayedJourneys
+
+// For AWS Lambda
+exports.handler = handler

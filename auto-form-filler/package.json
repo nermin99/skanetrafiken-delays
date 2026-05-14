@@ -1,0 +1,14 @@
+{
+  "name": "skanetrafiken-delays-auto-form-filler",
+  "version": "1.0.0",
+  "description": "Automated form filler for Skånetrafiken compensation claims",
+  "type": "module",
+  "main": "auto-form-filler.js",
+  "scripts": {
+    "start": "node auto-form-filler.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "puppeteer": "^21.0.0"
+  }
+}

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+
+  <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="05efd667-e8a4-4a76-a3a0-c4e12ecb2b43"
+    data-blockingmode="auto" type="text/javascript"></script>
+
+  <style type="text/css">
+    a#CybotCookiebotDialogPoweredbyCybot,
+    div#CybotCookiebotDialogPoweredByText {
+      display: none;
+    }
+
+    #CookiebotWidget .CookiebotWidget-body .CookiebotWidget-main-logo {
+      display: none;
+    }
+  </style>
+  <script type="text/javascript">
+    !function (T, l, y) { var S = T.location, k = "script", D = "instrumentationKey", C = "ingestionendpoint", I = "disableExceptionTracking", E = "ai.device.", b = "toLowerCase", w = "crossOrigin", N = "POST", e = "appInsightsSDK", t = y.name || "appInsights"; (y.name || T[e]) && (T[e] = t); var n = T[t] || function (d) { var g = !1, f = !1, m = { initialize: !0, queue: [], sv: "5", version: 2, config: d }; function v(e, t) { var n = {}, a = "Browser"; return n[E + "id"] = a[b](), n[E + "type"] = a, n["ai.operation.name"] = S && S.pathname || "_unknown_", n["ai.internal.sdkVersion"] = "javascript:snippet_" + (m.sv || m.version), { time: function () { var e = new Date; function t(e) { var t = "" + e; return 1 === t.length && (t = "0" + t), t } return e.getUTCFullYear() + "-" + t(1 + e.getUTCMonth()) + "-" + t(e.getUTCDate()) + "T" + t(e.getUTCHours()) + ":" + t(e.getUTCMinutes()) + ":" + t(e.getUTCSeconds()) + "." + ((e.getUTCMilliseconds() / 1e3).toFixed(3) + "").slice(2, 5) + "Z" }(), iKey: e, name: "Microsoft.ApplicationInsights." + e.replace(/-/g, "") + "." + t, sampleRate: 100, tags: n, data: { baseData: { ver: 2 } } } } var h = d.url || y.src; if (h) { function a(e) { var t, n, a, i, r, o, s, c, u, p, l; g = !0, m.queue = [], f || (f = !0, t = h, s = function () { var e = {}, t = d.connectionString; if (t) for (var n = t.split(";"), a = 0; a < n.length; a++) { var i = n[a].split("="); 2 === i.length && (e[i[0][b]()] = i[1]) } if (!e[C]) { var r = e.endpointsuffix, o = r ? e.location : null; e[C] = "https://" + (o ? o + "." : "") + "dc." + (r || "services.visualstudio.com") } return e }(), c = s[D] || d[D] || "", u = s[C], p = u ? u + "/v2/track" : d.endpointUrl, (l = []).push((n = "SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)", a = t, i = p, (o = (r = v(c, "Exception")).data).baseType = "ExceptionData", o.baseData.exceptions = [{ typeName: "SDKLoadFailed", message: n.replace(/\./g, "-"), hasFullStack: !1, stack: n + "\nSnippet failed to load [" + a + "] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: " + (S && S.pathname || "_unknown_") + "\nEndpoint: " + i, parsedStack: [] }], r)), l.push(function (e, t, n, a) { var i = v(c, "Message"), r = i.data; r.baseType = "MessageData"; var o = r.baseData; return o.message = 'AI (Internal): 99 message:"' + ("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) (" + n + ")").replace(/\"/g, "") + '"', o.properties = { endpoint: a }, i }(0, 0, t, p)), function (e, t) { if (JSON) { var n = T.fetch; if (n && !y.useXhr) n(t, { method: N, body: JSON.stringify(e), mode: "cors" }); else if (XMLHttpRequest) { var a = new XMLHttpRequest; a.open(N, t), a.setRequestHeader("Content-type", "application/json"), a.send(JSON.stringify(e)) } } }(l, p)) } function i(e, t) { f || setTimeout(function () { !t && m.core || a() }, 500) } var e = function () { var n = l.createElement(k); n.src = h; var e = y[w]; return !e && "" !== e || "undefined" == n[w] || (n[w] = e), n.onload = i, n.onerror = a, n.onreadystatechange = function (e, t) { "loaded" !== n.readyState && "complete" !== n.readyState || i(0, t) }, n }(); y.ld < 0 ? l.getElementsByTagName("head")[0].appendChild(e) : setTimeout(function () { l.getElementsByTagName(k)[0].parentNode.appendChild(e) }, y.ld || 0) } try { m.cookie = l.cookie } catch (p) { } function t(e) { for (; e.length;)!function (t) { m[t] = function () { var e = arguments; g || m.queue.push(function () { m[t].apply(m, e) }) } }(e.pop()) } var n = "track", r = "TrackPage", o = "TrackEvent"; t([n + "Event", n + "PageView", n + "Exception", n + "Trace", n + "DependencyData", n + "Metric", n + "PageViewPerformance", "start" + r, "stop" + r, "start" + o, "stop" + o, "addTelemetryInitializer", "setAuthenticatedUserContext", "clearAuthenticatedUserContext", "flush"]), m.SeverityLevel = { Verbose: 0, Information: 1, Warning: 2, Error: 3, Critical: 4 }; var s = (d.extensionConfig || {}).ApplicationInsightsAnalytics || {}; if (!0 !== d[I] && !0 !== s[I]) { var c = "onerror"; t(["_" + c]); var u = T[c]; T[c] = function (e, t, n, a, i) { var r = u && u(e, t, n, a, i); return !0 !== r && m["_" + c]({ message: e, url: t, lineNumber: n, columnNumber: a, error: i }), r }, d.autoExceptionInstrumented = !0 } return m }(y.cfg); function a() { y.onInit && y.onInit(n) } (T[t] = n).queue && 0 === n.queue.length ? (n.queue.push(a), n.trackPageView({})) : a() }(window, document, {
+      src: "https://js.monitor.azure.com/scripts/b/ai.2.min.js", // The SDK URL Source
+      // name: "appInsights", // Global SDK Instance name defaults to "appInsights" when not supplied
+      // ld: 0, // Defines the load delay (in ms) before attempting to load the sdk. -1 = block page load and add to head. (default) = 0ms load after timeout,
+      // useXhr: 1, // Use XHR instead of fetch to report failures (if available),
+      crossOrigin: "anonymous", // When supplied this will add the provided value as the cross origin attribute on the script tag
+      // onInit: null, // Once the application insights instance has loaded and initialized this callback function will be called with 1 argument -- the sdk instance (DO NOT ADD anything to the sdk.queue -- As they won't get called)
+      cfg: { // Application Insights Configuration
+        connectionString: "InstrumentationKey=88cd88f9-17e6-491d-b6ea-412342bc5b7c;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/"
+      }
+    });
+  </script>
+
+  <script type="text/javascript">
+    !function (T, l, y) { var S = T.location, k = "script", D = "instrumentationKey", C = "ingestionendpoint", I = "disableExceptionTracking", E = "ai.device.", b = "toLowerCase", w = "crossOrigin", N = "POST", e = "appInsightsSDK", t = y.name || "appInsightsSearch"; (y.name || T[e]) && (T[e] = t); var n = T[t] || function (d) { var g = !1, f = !1, m = { initialize: !0, queue: [], sv: "5", version: 2, config: d }; function v(e, t) { var n = {}, a = "Browser"; return n[E + "id"] = a[b](), n[E + "type"] = a, n["ai.operation.name"] = S && S.pathname || "_unknown_", n["ai.internal.sdkVersion"] = "javascript:snippet_" + (m.sv || m.version), { time: function () { var e = new Date; function t(e) { var t = "" + e; return 1 === t.length && (t = "0" + t), t } return e.getUTCFullYear() + "-" + t(1 + e.getUTCMonth()) + "-" + t(e.getUTCDate()) + "T" + t(e.getUTCHours()) + ":" + t(e.getUTCMinutes()) + ":" + t(e.getUTCSeconds()) + "." + ((e.getUTCMilliseconds() / 1e3).toFixed(3) + "").slice(2, 5) + "Z" }(), iKey: e, name: "Microsoft.ApplicationInsights." + e.replace(/-/g, "") + "." + t, sampleRate: 100, tags: n, data: { baseData: { ver: 2 } } } } var h = d.url || y.src; if (h) { function a(e) { var t, n, a, i, r, o, s, c, u, p, l; g = !0, m.queue = [], f || (f = !0, t = h, s = function () { var e = {}, t = d.connectionString; if (t) for (var n = t.split(";"), a = 0; a < n.length; a++) { var i = n[a].split("="); 2 === i.length && (e[i[0][b]()] = i[1]) } if (!e[C]) { var r = e.endpointsuffix, o = r ? e.location : null; e[C] = "https://" + (o ? o + "." : "") + "dc." + (r || "services.visualstudio.com") } return e }(), c = s[D] || d[D] || "", u = s[C], p = u ? u + "/v2/track" : d.endpointUrl, (l = []).push((n = "SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)", a = t, i = p, (o = (r = v(c, "Exception")).data).baseType = "ExceptionData", o.baseData.exceptions = [{ typeName: "SDKLoadFailed", message: n.replace(/\./g, "-"), hasFullStack: !1, stack: n + "\nSnippet failed to load [" + a + "] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: " + (S && S.pathname || "_unknown_") + "\nEndpoint: " + i, parsedStack: [] }], r)), l.push(function (e, t, n, a) { var i = v(c, "Message"), r = i.data; r.baseType = "MessageData"; var o = r.baseData; return o.message = 'AI (Internal): 99 message:"' + ("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) (" + n + ")").replace(/\"/g, "") + '"', o.properties = { endpoint: a }, i }(0, 0, t, p)), function (e, t) { if (JSON) { var n = T.fetch; if (n && !y.useXhr) n(t, { method: N, body: JSON.stringify(e), mode: "cors" }); else if (XMLHttpRequest) { var a = new XMLHttpRequest; a.open(N, t), a.setRequestHeader("Content-type", "application/json"), a.send(JSON.stringify(e)) } } }(l, p)) } function i(e, t) { f || setTimeout(function () { !t && m.core || a() }, 500) } var e = function () { var n = l.createElement(k); n.src = h; var e = y[w]; return !e && "" !== e || "undefined" == n[w] || (n[w] = e), n.onload = i, n.onerror = a, n.onreadystatechange = function (e, t) { "loaded" !== n.readyState && "complete" !== n.readyState || i(0, t) }, n }(); y.ld < 0 ? l.getElementsByTagName("head")[0].appendChild(e) : setTimeout(function () { l.getElementsByTagName(k)[0].parentNode.appendChild(e) }, y.ld || 0) } try { m.cookie = l.cookie } catch (p) { } function t(e) { for (; e.length;)!function (t) { m[t] = function () { var e = arguments; g || m.queue.push(function () { m[t].apply(m, e) }) } }(e.pop()) } var n = "track", r = "TrackPage", o = "TrackEvent"; t([n + "Event", n + "PageView", n + "Exception", n + "Trace", n + "DependencyData", n + "Metric", n + "PageViewPerformance", "start" + r, "stop" + r, "start" + o, "stop" + o, "addTelemetryInitializer", "setAuthenticatedUserContext", "clearAuthenticatedUserContext", "flush"]), m.SeverityLevel = { Verbose: 0, Information: 1, Warning: 2, Error: 3, Critical: 4 }; var s = (d.extensionConfig || {}).ApplicationInsightsAnalytics || {}; if (!0 !== d[I] && !0 !== s[I]) { var c = "onerror"; t(["_" + c]); var u = T[c]; T[c] = function (e, t, n, a, i) { var r = u && u(e, t, n, a, i); return !0 !== r && m["_" + c]({ message: e, url: t, lineNumber: n, columnNumber: a, error: i }), r }, d.autoExceptionInstrumented = !0 } return m }(y.cfg); function a() { y.onInit && y.onInit(n) } (T[t] = n).queue && 0 === n.queue.length ? (n.queue.push(a), n.trackPageView({})) : a() }(window, document, {
+      src: "https://js.monitor.azure.com/scripts/b/ai.2.min.js", // The SDK URL Source
+      name: "appInsightsSearch", // Global SDK Instance name defaults to "appInsights" when not supplied
+      // ld: 0, // Defines the load delay (in ms) before attempting to load the sdk. -1 = block page load and add to head. (default) = 0ms load after timeout,
+      // useXhr: 1, // Use XHR instead of fetch to report failures (if available),
+      crossOrigin: "anonymous", // When supplied this will add the provided value as the cross origin attribute on the script tag
+      // onInit: null, // Once the application insights instance has loaded and initialized this callback function will be called with 1 argument -- the sdk instance (DO NOT ADD anything to the sdk.queue -- As they won't get called)
+      cfg: { // Application Insights Configuration
+        connectionString: "InstrumentationKey=eeb2452a-8b9c-43f8-9585-6a8d443b0a1d;IngestionEndpoint=https://westeurope-3.in.applicationinsights.azure.com/;ApplicationId=b7031d71-e4f5-4ec9-beb5-0e42ba875629"
+      }
+    });
+  </script>
+
+
+  <script src="https://wds.ace.teliacompany.com/wds/instances/JlLKjqJt/ACEWebSDK.min.js"></script>
+
+
+
+
+  <script src="https://www.google.com/recaptcha/api.js?render=6LeAM6QdAAAAALezk6FMGSIazyG72IpqFmAIOQpT"></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LcyU7oUAAAAAHlmBTIPMBSN-FNH1i4IL7JPEzEc"></script>
+
+
+
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-translate-customization" content="" />
+  <meta name="format-detection" content="telephone=no">
+  <meta property="og:image" content="https://www.skanetrafiken.se" />
+
+  <meta name="sedomain" content="https://www.skanetrafiken.se" />
+
+  <meta name="dkdomain" content="https://www.skanetrafiken.dk" />
+
+  <meta name="title" content="Sk&#229;netrafiken ers&#228;ttning " property="og:title">
+  <meta name="description" content="Vill du ans&#246;ka om Sk&#229;netrafikens ers&#228;ttning vid f&#246;rseningar? F&#246;lj denna guide och f&#229; besked om ers&#228;ttning redan inom 24 timmar. Ans&#246;k h&#228;r!
+
+
+" property="og:description">
+  <meta name="keywords" property="">
+  <meta name="mobile-web-app-capable" content="yes" property="" />
+  <meta name="pageId" content="270" />
+
+
+
+  <title>Sk&#229;netrafiken ers&#228;ttning - steg 6 av 6 -Sk&#229;netrafiken</title>
+
+  <link rel="stylesheet" type="text/css" href="/css?v=EHJKPPJ8yMAs1hkQrXo-lKENhZrk8UPRfjDOIWbAyGg1">
+  <link rel="stylesheet" type="text/css" href="/jquiac/css?v=0DVqtX-xqhcOD3prQlaomNc9Edp_UXi9CKNFknfzLa41" />
+
+
+
+
+
+
+  <!-- Favicon and bookmark icons / updated april 2018 -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/Static/Assets/Icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/Static/Assets/Icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/Static/Assets/Icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/Static/Assets/Icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/Static/Assets/Icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/Static/Assets/Icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/Static/Assets/Icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/Static/Assets/Icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Static/Assets/Icons/apple-icon-180x180.png">
+  <link rel="apple-touch-icon-precomposed" sizes="192x192" href="/Static/Assets/Icons/apple-icon-precomposed.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/Static/Assets/Icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Static/Assets/Icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/Static/Assets/Icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Static/Assets/Icons/favicon-16x16.png">
+  <link rel="manifest" href="/Static/Assets/Icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/Static/Assets/Icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+
+
+
+  <script src="/js/first?v=LdOX17QLjgc8Mq7mA_iAGpQLgg1RS4Sl0MtrWwnbu3M1"></script>
+
+  <script name="renaming_jqueryui_autocomplete">
+    $.fn.jQueryUiAutocomplete = $.fn.autocomplete
+    delete $.fn.autocomplete;
+  </script>
+</head>
+
+<!--[if gt IE 9]><body class="no-js forms" ><![endif]-->
+<!--[if !IE]>-->
+
+<body class="no-js forms">
+
+  <!--<![endif]-->
+  <!--[if lt IE 9]><p class="oldbrowsernotify">Du använder en gammal webbläsare. <a href="http://browsehappy.com/">Uppgradera din webbläsare för att kunna använda all funktionalitet på Skånetrafiken.se</a></p><![endif]-->
+
+
+
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <script data-cookieconsent='ignore'
+    src="https://www.google.com/recaptcha/api.js?render=6LcyU7oUAAAAAHlmBTIPMBSN-FNH1i4IL7JPEzEc"></script>
+  <script type="module" crossorigin="" data-cookieconsent='ignore'
+    src="https://www.skanetrafiken.se/gw-pagelibrary//assets/index-B36zhq0Z.js"></script>
+  <link rel="stylesheet" crossorigin="" href="https://www.skanetrafiken.se/gw-pagelibrary//assets/style-5wgz58V-.css">
+
+
+  <web-component-selector type="header-block" viewmodel='{
+  &quot;topMenu&quot;: [
+    {
+      &quot;text&quot;: &quot;S&#246;k&quot;,
+      &quot;href&quot;: &quot;/sok/&quot;,
+      &quot;type&quot;: 2
+    }
+  ],
+  &quot;mainMenu&quot;: [
+    {
+      &quot;text&quot;: &quot;V&#229;ra biljetter&quot;,
+      &quot;href&quot;: &quot;/biljetter/&quot;,
+      &quot;type&quot;: 0
+    },
+    {
+      &quot;text&quot;: &quot;S&#229; reser du med oss&quot;,
+      &quot;href&quot;: &quot;/sa-reser-du-med-oss/&quot;,
+      &quot;type&quot;: 0
+    },
+    {
+      &quot;text&quot;: &quot;Kundservice&quot;,
+      &quot;href&quot;: &quot;/kundservice/&quot;,
+      &quot;type&quot;: 0
+    }
+  ],
+  &quot;userMenu&quot;: [
+    {
+      &quot;text&quot;: &quot;Mitt konto&quot;,
+      &quot;href&quot;: &quot;/mitt-konto/&quot;,
+      &quot;type&quot;: 0
+    }
+  ],
+  &quot;loginMenu&quot;: [
+    {
+      &quot;text&quot;: &quot;Mitt  konto&quot;,
+      &quot;href&quot;: &quot;/mitt-konto&quot;,
+      &quot;type&quot;: 1,
+      &quot;desc&quot;: &quot;Ta del av v&#229;ra erbjudanden och tj&#228;nster&quot;,
+      &quot;icon&quot;: &quot;mitt-konto&quot;
+    },
+    {
+      &quot;text&quot;: &quot;F&#246;retag&quot;,
+      &quot;href&quot;: &quot;https://foretag.skanetrafiken.se/login&quot;,
+      &quot;type&quot;: 3,
+      &quot;desc&quot;: &quot;K&#246;p och skicka biljetter med f&#246;retagskonto&quot;,
+      &quot;icon&quot;: &quot;foretag&quot;
+    },
+    {
+      &quot;text&quot;: &quot;Kommun&quot;,
+      &quot;href&quot;: &quot;https://kommun.skanetrafiken.se/&quot;,
+      &quot;type&quot;: 4,
+      &quot;desc&quot;: &quot;Administrera skol- senior- och ungdomsbiljetter&quot;,
+      &quot;icon&quot;: &quot;skola&quot;
+    }
+  ],
+  &quot;texts&quot;: {
+    &quot;loggedIn&quot;: &quot;Inloggad&quot;,
+    &quot;login&quot;: &quot;Logga in&quot;,
+    &quot;logout&quot;: &quot;Logga ut&quot;
+  },
+  &quot;isDanishActivated&quot;: true
+}'></web-component-selector>
+
+  <div class="st-wrapper">
+
+    <div class="heroimage" role="presentation"></div>
+
+    <div id="main-content" tabindex="-1">
+
+
+
+
+      <script src="https://www.google.com/recaptcha/api.js?render=6LcyU7oUAAAAAHlmBTIPMBSN-FNH1i4IL7JPEzEc"></script>
+
+      <div id="main" role="main" class="normal-page travel-warranty">
+        <nav class="st-breadcrumb">
+          <a style="display: flex; align-items: center;" href="/kundservice/forseningsersattning/"
+            aria-label="Ers&#228;ttning vid f&#246;rsening, tillbaka">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              role="presentation">
+              <!---->
+              <rect width="24" height="24" fill="white"></rect>
+              <g clip-path="url(#clip0_1663_33077)">
+                <path d="M13.9999 5.99987C11.5 8.99994 9 11.9999 9 11.9999L13.9999 18" stroke="#2B241D" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                </path>
+              </g>
+              <defs>
+                <clipPath id="clip0_1663_33077">
+                  <rect width="16" height="16" fill="white" transform="translate(4 20) rotate(-90)">
+
+                  </rect>
+                </clipPath>
+              </defs>
+            </svg> Ers&#228;ttning vid f&#246;rsening
+          </a>
+        </nav>
+
+
+
+        <NOSCRIPT>
+          <div class="noscript-text">
+            <span role="alert">! Denna sida fungerar inte korrekt utan JavaScript aktiverat. V&#228;nligen aktivera det
+              f&#246;r att forts&#228;tta. Eller kontakta kundtj&#228;nst f&#246;r hj&#228;lp</span>
+          </div>
+        </NOSCRIPT>
+
+        <section class="forms">
+          <h1 class="travel-warranty__title">Ans&#246;kan om ers&#228;ttning - steg 6</h1>
+          <div class="session-expired">
+
+          </div>
+          <button type="button" class="standard-btn secondary stopprocess">Avbryt ans&#246;kan</button>
+          <div class="step">
+            <p>Steg 6 av 6</p>
+            <div class="line">
+              <span class="first active"></span>
+              <span class="active"></span>
+              <span class="active"></span>
+              <span class="active"></span>
+              <span class="active"></span>
+              <span class="last active"></span>
+
+            </div>
+          </div>
+          <div id="travel-warrenty-form" class="travel-warrenty-form">
+            <input type="hidden" name="SiteKeyHidden" id="SiteKeyHidden"
+              value=6LcyU7oUAAAAAHlmBTIPMBSN-FNH1i4IL7JPEzEc />
+
+
+
+
+            <h2>Kontrollera dina uppgifter</h2>
+            <div class="step-text">
+              <p>L&auml;s igenom dina uppgifter s&aring; allt st&auml;mmer innan du skickar in din ans&ouml;kan.</p>
+            </div>
+
+            <div class="step6-review">
+              <div class="form-controls">
+                <form Id="TravleWarrentyFrom" action="/kundservice/forseningsersattning/ansokan/StepSix/" method="post">
+                  <input id="StepSixModel_RecaptchaToken" name="StepSixModel.RecaptchaToken" type="hidden" value="" />
+                  <div class="input-row">
+                    <h3>Vilken datum reste du?</h3>
+                    ons 20 aug 2025
+
+
+
+
+
+                  </div>
+                  <div class="input-row">
+                    <h3>Hur betalade du din resa?</h3>
+
+
+
+                    <div class="sub-row">
+                      <p>Appbiljett mobilnummer: <b>0700464856</b></p>
+
+                      <p>Appbiljett: <b> DWYVTZ3</b></p>
+
+                    </div>
+
+
+
+
+
+
+                  </div>
+                  <div class="input-row">
+                    <h3>Uppskattad f&#246;rsening</h3>
+                    <p>20-39 min</p>
+                  </div>
+                  <div class="input-row">
+                    <h3>Resan</h3>
+                    <p><span class="skiptranslate">07:35 - 08:22 (&#214;resundst&#229;g) Malm&#246; C - K&#246;penhamn
+                        &#216;sterport</span></p>
+                    <p><span class="skiptranslate">08:22 - 08:24 (G&#229;ng) K&#246;penhamn &#216;sterport -
+                        &#216;sterport St.</span></p>
+
+
+
+                  </div>
+                  <div class="input-row">
+                    <h3>Ers&#228;ttningstyp</h3>
+                    <p>Prisavdrag resa med Sk&#229;netrafiken</p>
+
+
+
+
+                  </div>
+                  <div class="input-row">
+                    <h3>Hur vill du f&#229; din ers&#228;ttning?</h3>
+                    <p>Värdekod</p>
+                    <p class="skiptranslate">Via SMS: 0700464856</p>
+
+
+
+
+                  </div>
+                  <div class="input-row-tight">
+                    <div class="questions">
+                      <button type="button" aria-controls="answer" aria-expanded="false" class="question-button"
+                        title="Godk&#228;nnande av personuppgifter">
+                        <p class="question plus">
+                          Godk&#228;nnande av personuppgifter
+                        </p>
+                      </button>
+                      <div class="answer" id="answerConsent">
+                        <div class="mainbody">
+                          <p>De personuppgifter du skriver h&auml;r samlas in och behandlas f&ouml;r att vi ska kunna
+                            hantera ditt &auml;rende. F&ouml;r att ditt &auml;rende ska hanteras s&aring; snabbt som
+                            m&ouml;jligt kan ett automatiserat beslutsfattande baserat p&aring; dina uppgifter komma att
+                            anv&auml;ndas. L&auml;s mer om hur vi behandlar dina personuppgifter&nbsp;<a
+                              href="/link/f5f1c81d5ecc46e4ba093948b189f250.aspx" target='_blank'>h&auml;r<span>(Öppnas i
+                                nytt fönster)</span></a>.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <span class="field-validation-valid" data-valmsg-for="StepSixModel_ConsentAccepted"
+                      data-valmsg-replace="true">
+                      <span role="alert" class="single-error-text" id="StepSixModel_ConsentAccepted-error"
+                        style="display:none">Du m&#229;ste godk&#228;nna att dina personuppgifter behandlas av
+                        Sk&#229;netrafiken.</span>
+                    </span>
+                    <label class="st-checkbox" aria-checked="false">
+                      <input class="st-checkbox__input" data-val="true"
+                        data-val-required="&quot;ConsentAccepted&quot; måste anges." id="StepSixModel_ConsentAccepted"
+                        name="StepSixModel.ConsentAccepted" tabindex="0" type="checkbox" value="true" /><input
+                        name="StepSixModel.ConsentAccepted" type="hidden" value="false" />
+                      <span class="st-checkbox__checkmark"></span>
+                      <span class="st-checkbox__text span-with-mandatory-text">
+                        Jag godk&#228;nner att mina personuppgifter behandlas av Sk&#229;netrafiken
+                        <span class="span-mandatory-text">- obligatoriskt</span>
+                      </span>
+                    </label>
+                  </div>
+                  <input type="hidden" name="consentAcceptedHidden" id="consentAcceptedHidden" value="false" />
+                  <div class="input-row-tight">
+
+                    <div class="questions">
+                      <button type="button" aria-controls="answer" aria-expanded="false" class="question-button"
+                        id="qb1">
+                        <p class="question plus">
+                          Se villkor f&#246;r ans&#246;kan om ers&#228;ttning
+                        </p>
+                      </button>
+                      <div class="answer" id="answer">
+                        <div class="mainbody">
+                          <p><a href="/link/1de28a6adb96491db8d8bdb37fc024c7.aspx" target="_blank"
+                              rel="noopener">Villkor f&ouml;r att f&aring; ers&auml;ttning vid
+                              f&ouml;rsening<span>(Öppnas i nytt fönster)</span></a></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="input-row">
+                    <span class="field-validation-valid" data-valmsg-for="StepSixModel_AcceptPolicy"
+                      data-valmsg-replace="true">
+                      <span role="alert" class="single-error-text" id="StepSixModel_AcceptPolicy-error"
+                        style="display:none">Du m&#229;ste godk&#228;nna att du l&#228;st villkoren och accepterar
+                        dem.</span>
+                    </span>
+                    <label class="st-checkbox" aria-checked="false">
+                      <input class="st-checkbox__input" data-val="true"
+                        data-val-required="&quot;AcceptPolicy&quot; måste anges." id="StepSixModel_AcceptPolicy"
+                        name="StepSixModel.AcceptPolicy" tabindex="0" type="checkbox" value="true" /><input
+                        name="StepSixModel.AcceptPolicy" type="hidden" value="false" />
+                      <span class="st-checkbox__checkmark"></span>
+                      <span class="st-checkbox__text span-with-mandatory-text">
+                        Jag har l&#228;st villkoren och accepterar dem
+                        <span class="span-mandatory-text">
+                          - obligatoriskt
+                        </span>
+                      </span>
+
+                    </label>
+                  </div>
+                  <div class="input-row">
+                    <span class="field-validation-valid" data-valmsg-for="StepSixModel_ApprovePersonalInfo"
+                      data-valmsg-replace="true">
+                      <span role="alert" class="single-error-text" id="StepSixModel_ApprovePersonalInfo-error"
+                        style="display:none">Du m&#229;ste intyga att de uppgifter du angivit &#228;r
+                        sanningsenliga.</span>
+                    </span>
+                    <label class="st-checkbox" aria-checked="false">
+                      <input class="st-checkbox__input" data-val="true"
+                        data-val-required="&quot;ApprovePersonalInfo&quot; måste anges."
+                        id="StepSixModel_ApprovePersonalInfo" name="StepSixModel.ApprovePersonalInfo" tabindex="0"
+                        type="checkbox" value="true" /><input name="StepSixModel.ApprovePersonalInfo" type="hidden"
+                        value="false" />
+                      <span class="st-checkbox__checkmark"></span>
+                      <span class="st-checkbox__text span-with-mandatory-text">
+                        Jag intygar att de uppgifter jag angivit &#228;r sanningsenliga
+                        <span class="span-mandatory-text">
+                          - obligatoriskt
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                  <input type="hidden" id="direction" name="direction" value="nextStep" />
+                  <div style="display: none" id="FormError">
+                    <div class="validation-container" id="formError">
+                      <h3>F&#246;ljande fel intr&#228;ffade</h3>
+                      <div class="validation-summary-errors" data-valmsg-summary="true">
+                        <ul>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" id="hdLackSwedishSocialSecurityNumber" />
+          <input type="hidden" id="currentStep" value="6" />
+          <input type="hidden" id="cancelRedirectTo" value="/kundservice/forseningsersattning/" />
+          <input type="hidden" id="serviceResponseRGOLApproved" value="" />
+
+          <button type="button" class="standard-btn previous ">Tillbaka till steg 5, Ers&#228;ttningstyp</button>
+          <button type="button" class="standard-btn continue ">Ans&#246;k om ers&#228;ttning</button>
+        </section>
+
+        <div id="modal-abort">
+          <div class="modal-content-text">
+
+          </div>
+
+          <div class="buttons">
+            <div>
+              <input type="button" class="close" value="Ok" />
+            </div>
+            <div>
+              <form action="/kundservice/forseningsersattning/ansokan/" method="post"> <input type="submit"
+                  name="CancelForm" value="Avbryt" class="cancel" />
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+  <web-component-selector type="footer-block" viewmodel='{
+  &quot;footerSections&quot;: [
+    {
+      &quot;sectionName&quot;: &quot;Kontakta oss&quot;,
+      &quot;footerLinks&quot;: [
+        {
+          &quot;href&quot;: &quot;/kundservice/&quot;,
+          &quot;name&quot;: &quot;Kundservice&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/kundservice/fardtjanst-och-sjukresa/&quot;,
+          &quot;name&quot;: &quot;Kundtj&#228;nst serviceresor&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/kundservice/kundcenter/&quot;,
+          &quot;name&quot;: &quot;Bes&#246;k oss&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/om-oss/pressinformation/&quot;,
+          &quot;name&quot;: &quot;Pressinformation&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/om-oss/annonsering/&quot;,
+          &quot;name&quot;: &quot;Annonsering i kollektivtrafiken&quot;
+        }
+      ]
+    },
+    {
+      &quot;sectionName&quot;: &quot;Om oss&quot;,
+      &quot;footerLinks&quot;: [
+        {
+          &quot;href&quot;: &quot;/om-oss/vart-uppdrag/&quot;,
+          &quot;name&quot;: &quot;V&#229;rt uppdrag&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/om-oss/jobba-hos-oss/&quot;,
+          &quot;name&quot;: &quot;Jobba hos oss&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/aktuellt/tillganglighetsredogorelser/&quot;,
+          &quot;name&quot;: &quot;Tillg&#228;nglighetsredog&#246;relser&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/sa-reser-du-med-oss/villkor/&quot;,
+          &quot;name&quot;: &quot;Villkor&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/om-oss/cookies/&quot;,
+          &quot;name&quot;: &quot;Cookies&quot;
+        }
+      ]
+    },
+    {
+      &quot;sectionName&quot;: &quot;V&#229;ra tj&#228;nster&quot;,
+      &quot;footerLinks&quot;: [
+        {
+          &quot;href&quot;: &quot;/sok-resa/tidtabeller/&quot;,
+          &quot;name&quot;: &quot;Tidtabeller&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/kartor/&quot;,
+          &quot;name&quot;: &quot;Kartor&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/serviceresor/&quot;,
+          &quot;name&quot;: &quot;Serviceresor&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/foretag/&quot;,
+          &quot;name&quot;: &quot;F&#246;retag&quot;
+        },
+        {
+          &quot;href&quot;: &quot;/skola/&quot;,
+          &quot;name&quot;: &quot;Kommun&quot;
+        }
+      ]
+    }
+  ],
+  &quot;socialMediaLinks&quot;: [
+    {
+      &quot;sectionName&quot;: &quot;F&#246;lj oss&quot;,
+      &quot;footerLinks&quot;: [
+        {
+          &quot;href&quot;: &quot;https://www.facebook.com/skanetrafiken&quot;,
+          &quot;name&quot;: &quot;Facebook&quot;,
+          &quot;icon&quot;: &quot;FacebookIcon&quot;
+        },
+        {
+          &quot;href&quot;: &quot;ttps://www.instagram.com/skanetrafiken/&quot;,
+          &quot;name&quot;: &quot;Instagram&quot;,
+          &quot;icon&quot;: &quot;InstagramIcon&quot;
+        },
+        {
+          &quot;href&quot;: &quot;https://www.linkedin.com/company/skanetrafiken&quot;,
+          &quot;name&quot;: &quot;LinkedIn&quot;,
+          &quot;icon&quot;: &quot;LinkedInIcon&quot;
+        }
+      ]
+    }
+  ],
+  &quot;regionLogo&quot;: {
+    &quot;href&quot;: &quot;/globalassets/sidfot/rs-logotyp-vit.png&quot;,
+    &quot;altText&quot;: &quot;Sk&#229;netrafiken &#228;r en del av Region Sk&#229;ne. L&#228;nk till skane.se&quot;
+  }
+}'></web-component-selector>
+
+  <a href="//skanetrafiken.humany.net/direktchatt" aria-label="Kontakt och hj&#228;lp"></a>
+
+  <script type="text/javascript">
+    (function () {
+      if (document.body.attributes['class'] != undefined) {
+        var classlist = document.body.attributes['class'].value;
+        document.body.attributes['class'].value = classlist.replace("no-js ", "");
+      } else {
+        if (document.body.classList !== undefined) {
+          document.body.classList.remove("no-js");
+        }
+      }
+    })();
+  </script>
+
+  <script src="/js/second?v=WFeBDtEM3sQrNkgWOP9CDQEM--unFBG8SK8N8oRXrHI1"></script>
+
+  <script src="/js/third?v=Dq4TBkrQFWiH7K1Fzc2oLYcK9Y08ITogwFJhkBmpTYg1"></script>
+
+
+
+
+
+
+  <script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script type="text/javascript">
+    $(function () {
+      skanetrafiken.modules.notification({ internalServerErrorMessage: "Något gick fel. Kontakta kundtjänst för mer information." }).init();
+    });
+  </script>
+
+
+</body>
+
+
+</html>

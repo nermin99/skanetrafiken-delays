@@ -1,5 +1,5 @@
 {
-  "name": "skanetrafiken-delays",
+  "name": "skanetrafiken-delays-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,12 +8,10 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --check src",
+    "format:check": "prettier --check src",
     "format:fix": "prettier --write src",
     "typecheck": "tsc",
-    "typecheck:watch": "tsc -w",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "typecheck:watch": "tsc -w"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
@@ -38,7 +36,6 @@
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "gh-pages": "^6.3.0",
     "globals": "^17.6.0",
     "prettier": "^3.8.3",
     "typescript": "~6.0.2",

@@ -1,0 +1,30 @@
+meta {
+  name: Journey
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_URL}}/Journey?fromPointId=9021012080040000&toPointId=9021012045006000&journeyDateTime=2025-12-16T08:00:00.000Z&fromPointType=STOP_AREA&toPointType=STOP_AREA&journeysAfter=8
+  body: none
+  auth: inherit
+}
+
+params:query {
+  fromPointId: 9021012080040000
+  toPointId: 9021012045006000
+  journeyDateTime: 2025-12-16T08:00:00.000Z
+  fromPointType: STOP_AREA
+  toPointType: STOP_AREA
+  journeysAfter: 8
+}
+
+headers {
+  Search-Engine-Environment: TjP
+  User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.80 Mobile Safari/537.36
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,30 @@
+{
+  "name": "skanetrafiken-delays-backend",
+  "version": "1.0.0",
+  "description": "AWS Lambda function to monitor Skånetrafiken journeys for delays",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "node dist/index.js",
+    "dev": "node src/index.ts",
+    "dev:watch": "node --watch src/index.ts",
+    "test": "jest",
+    "format:check": "prettier --check src",
+    "format:fix": "prettier --write src"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.917.0",
+    "@aws-sdk/lib-dynamodb": "^3.917.0",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.1",
+    "jest": "^30.2.0",
+    "prettier": "^3.8.3",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3"
+  }
+}

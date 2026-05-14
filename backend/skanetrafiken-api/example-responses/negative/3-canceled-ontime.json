@@ -1,0 +1,198 @@
+{
+  "api": "se.skanetrafiken.api",
+  "time": "2025-12-01T07:00:00Z",
+  "usedSearchTime": "2025-12-01T07:00:00Z",
+  "refreshRateSeconds": 30,
+  "id": "05ef5ee0a5782eb0aa4950c54abe5f9a",
+  "journeys": [
+    {
+      "id": 0,
+      "sequenceNo": 0,
+      "noOfChanges": 0,
+      "deviationTag": { "text": "INSTÄLLD", "prio": 2 },
+      "deviationTags": [{ "text": "INSTÄLLD", "prio": 2 }],
+      "routeLinks": [
+        {
+          "id": "ST¤SE¤276¤ServiceJourney¤1120000369060855|2025-12-01",
+          "from": {
+            "name": "Malmö Hyllie",
+            "time": "2025-12-01T06:59:00Z",
+            "pos": "Spår 1b",
+            "stopPointCoordinate": {
+              "lat": 55.562508,
+              "lon": 12.974802
+            },
+            "passed": true,
+            "coordinate": {
+              "lat": 55.562792,
+              "lon": 12.975828
+            },
+            "id2": "9021012080040000",
+            "timePoint": true
+          },
+          "to": {
+            "name": "CPH Airport Kastrup",
+            "time": "2025-12-01T07:13:00Z",
+            "pos": "Spår: Se skylt",
+            "passed": true,
+            "coordinate": {
+              "lat": 55.629429,
+              "lon": 12.649696
+            },
+            "id2": "9021012045006000",
+            "timePoint": true
+          },
+          "line": {
+            "name": "Öresundståg",
+            "type": "TrainOresund",
+            "no": "1031",
+            "lineNo": 12000804,
+            "lineNoString": "ST:SE:276:Line:9011012080400000",
+            "color": "FF706C6A",
+            "outlineColor": "FF3E3B39",
+            "iconColor": "FFFFFFFF",
+            "towards": "mot Østerport",
+            "runNo": 1031,
+            "subType": "Öresundståg",
+            "occupancySupport": false,
+            "operatorId": "ST:SE:276:Authority:9010012000000000",
+            "operatorName": "Skånetrafiken",
+            "gid": "9015012080401031"
+          },
+          "deviations": [
+            {
+              "text": "Tåget är inställt Helsingborg C - København Østerport. Orsaken är elfel. Vi hänvisar till övriga avgångar. ",
+              "prio": 2,
+              "infoLinks": []
+            }
+          ],
+          "path": "s`crIkcenAp@`C`AzDlDfNNv@|@lENx@nAlIhApMp@rIX`D`@hEh@zGZpFVxFNpGJtGBfGErHWxK[tHi@tI_@tEc@fEc@rDqB`NeD~R??aC|NoEfXeBhKaBtJwBdNYnBkBrP]hDCPUfDYnDe@dJWtGMvEE|DI`H?H?J?jA?hIJdINpHj@rRJtGP`L@|BDlD?fF?rEEdGG~EOlKAH]|O_A`]MjDm@jQiArXuBvb@sB|\\_BrUaCf[aCtXsCjYuF`h@}Df[wOlkAcMx~@kHdh@__AbsEwF|R{Jtl@mEtWam@n_Ba\\``AmEzNeKr\\mE|NuFrQiD|KoEzNmLx_@mExN{Kj^oExNoBpG_@nAsG~SmE|NwK|]aFlP_Lp^k@jBuD|LcCdI}HvYoCtNwAtPS|MDtI@xA@hDf@fIh@|IlEfKj@tAn@vAbBjV?lF@rHOdF",
+          "operatingDayDate": "2025-12-01"
+        }
+      ],
+      "transportMode": "Bridge"
+    },
+    {
+      "id": 1,
+      "sequenceNo": 0,
+      "noOfChanges": 0,
+      "routeLinks": [
+        {
+          "id": "ST¤SE¤276¤ServiceJourney¤1120000357560965|2025-12-01",
+          "from": {
+            "name": "Malmö Hyllie",
+            "time": "2025-12-01T07:08:00Z",
+            "pos": "Spår 1b",
+            "stopPointCoordinate": {
+              "lat": 55.562508,
+              "lon": 12.974802
+            },
+            "passed": true,
+            "coordinate": {
+              "lat": 55.562792,
+              "lon": 12.975828
+            },
+            "id2": "9021012080040000",
+            "timePoint": true
+          },
+          "to": {
+            "name": "CPH Airport Kastrup",
+            "time": "2025-12-01T07:20:00Z",
+            "pos": "Spår: Se skylt",
+            "deviation": 1,
+            "passed": true,
+            "coordinate": {
+              "lat": 55.629429,
+              "lon": 12.649696
+            },
+            "id2": "9021012045006000",
+            "timePoint": true
+          },
+          "line": {
+            "name": "Öresundståg",
+            "type": "TrainOresund",
+            "no": "1329",
+            "lineNo": 12000806,
+            "lineNoString": "ST:SE:276:Line:9011012080600000",
+            "color": "FF706C6A",
+            "outlineColor": "FF3E3B39",
+            "iconColor": "FFFFFFFF",
+            "towards": "mot Østerport",
+            "runNo": 1329,
+            "subType": "Öresundståg",
+            "occupancySupport": false,
+            "operatorId": "ST:SE:276:Authority:9010012000000000",
+            "operatorName": "Skånetrafiken",
+            "gid": "9015012080601329"
+          },
+          "deviations": [],
+          "path": "s`crIocenAp@dC`AzDlDfNNv@|@lENx@nAlIhApMp@rIX`D`@hEh@zGZpFVxFNpGJtGBfGErHWxK[tHi@tI_@tEc@fEc@rDqB`NeD~R??aC|NoEfXeBhKaBtJwBdNYnBkBrP]hDCPUfDYnDe@dJWtGMvEE|DI`H?H?J?jA?hIJdINpHj@rRJtGP`L@|BDlD?fF?rEEdGG~EOlKAH]|O_A`]MjDm@jQiArXuBvb@sB|\\_BrUaCf[aCtXsCjYuF`h@}Df[wOlkAcMx~@kHdh@__AbsEwF|R{Jtl@mEtWam@n_Ba\\``AmEzNeKr\\mE|NuFrQiD|KoEzNmLx_@mExN{Kj^oExNoBpG_@nAsG~SmE|NwK|]aFlP_Lp^k@jBuD|LcCdI}HvYoCtNwAtPS|MDtI@xA@hDf@fIh@|IlEfKj@tAn@vAbBjV?lF@rHMhF",
+          "operatingDayDate": "2025-12-01"
+        }
+      ],
+      "transportMode": "Bridge"
+    },
+    {
+      "id": 2,
+      "sequenceNo": 0,
+      "noOfChanges": 0,
+      "routeLinks": [
+        {
+          "id": "ST¤SE¤276¤ServiceJourney¤1120000357547054|2025-12-01",
+          "from": {
+            "name": "Malmö Hyllie",
+            "time": "2025-12-01T07:14:00Z",
+            "pos": "Spår 1b",
+            "stopPointCoordinate": {
+              "lat": 55.562508,
+              "lon": 12.974802
+            },
+            "passed": true,
+            "coordinate": {
+              "lat": 55.562792,
+              "lon": 12.975828
+            },
+            "id2": "9021012080040000",
+            "timePoint": true
+          },
+          "to": {
+            "name": "CPH Airport Kastrup",
+            "time": "2025-12-01T07:25:00Z",
+            "pos": "Spår: Se skylt",
+            "passed": true,
+            "coordinate": {
+              "lat": 55.629429,
+              "lon": 12.649696
+            },
+            "id2": "9021012045006000",
+            "timePoint": true
+          },
+          "line": {
+            "name": "Öresundståg",
+            "type": "TrainOresund",
+            "no": "1033",
+            "lineNo": 12000803,
+            "lineNoString": "ST:SE:276:Line:9011012080300000",
+            "color": "FF706C6A",
+            "outlineColor": "FF3E3B39",
+            "iconColor": "FFFFFFFF",
+            "towards": "mot Østerport",
+            "runNo": 1033,
+            "subType": "Öresundståg",
+            "occupancySupport": false,
+            "operatorId": "ST:SE:276:Authority:9010012000000000",
+            "operatorName": "Skånetrafiken",
+            "gid": "9015012080301033"
+          },
+          "deviations": [],
+          "path": "s`crIkcenAp@`C`AzDlDfNNv@|@lENx@nAlIhApMp@rIX`D`@hEh@zGZpFVxFNpGJtGBfGErHWxK[tHi@tI_@tEc@fEc@rDqB`NeD~R??aC|NoEfXeBhKaBtJwBdNYnBkBrP]hDCPUfDYnDe@dJWtGMvEE|DI`H?H?J?jA?hIJdINpHj@rRJtGP`L@|BDlD?fF?rEEdGG~EOlKAH]|O_A`]MjDm@jQiArXuBvb@sB|\\_BrUaCf[aCtXsCjYuF`h@}Df[wOlkAcMx~@kHdh@__AbsEwF|R{Jtl@mEtWam@n_Ba\\``AmEzNeKr\\mE|NuFrQiD|KoEzNmLx_@mExN{Kj^oExNoBpG_@nAsG~SmE|NwK|]aFlP_Lp^k@jBuD|LcCdI}HvYoCtNwAtPS|MDtI@xA@hDf@fIh@|IlEfKj@tAn@vAbBjV?lF@rHOdF",
+          "operatingDayDate": "2025-12-01"
+        }
+      ],
+      "transportMode": "Bridge"
+    }
+  ],
+  "prevCursor": "MnxQUkVWSU9VU19QQUdFfDIwMjUtMTItMDFUMDU6MTI6MDBafHwxaDQ4bXxTVFJFRVRfQU5EX0FSUklWQUxfVElNRXx8fHx8fHw=",
+  "nextCursor": "MnxORVhUX1BBR0V8MjAyNS0xMi0wMVQwODo0ODowMFp8fDFoNDhtfFNUUkVFVF9BTkRfQVJSSVZBTF9USU1FfHx8fHx8fA==",
+  "tooLongWalkJourneys": []
+}

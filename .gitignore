@@ -11,6 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+tsconfig.tsbuildinfo
+
+# Environment files
+.env
+
+# Puppeteer screenshots
+*/screenshots/*.png
 
 # Amplify Gen 2 workspace (generated outputs / artifacts)
 .amplify
