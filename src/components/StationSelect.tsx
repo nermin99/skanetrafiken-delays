@@ -16,7 +16,7 @@ export function StationSelect({
 }) {
   return (
     <label className="relative flex">
-      <span className="flex items-center rounded-l-lg border border-r-0 border-zinc-300 bg-zinc-50 px-4 py-2.5 text-sm font-medium text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+      <span className="flex w-17 items-center rounded-l-lg border border-r-0 border-zinc-300 bg-zinc-50 px-4 py-2.5 text-sm font-medium text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
         {label}
       </span>
       <Select

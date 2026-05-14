@@ -31,7 +31,7 @@ export function StationPicker({
     <div className="space-y-3">
       <div className="max-w-xl">
         <StationSelect
-          label="Station A:"
+          label="From:"
           value={stationA}
           onChange={onChangeA}
           options={STATIONS}
@@ -41,7 +41,7 @@ export function StationPicker({
       <div className="flex items-center gap-3">
         <div className="max-w-xl flex-1">
           <StationSelect
-            label="Station B:"
+            label="To:"
             value={stationB}
             onChange={onChangeB}
             options={STATIONS}
@@ -67,7 +67,7 @@ export function StationPicker({
           onChange={(e) => onChangeIgnoreDirection(e.target.checked)}
           className="h-4 w-4 rounded border-zinc-300 accent-brand dark:border-zinc-600"
         />
-        Ignore direction (show delays between the stations either way)
+        Ignore direction (show delays in either direction)
       </label>
       <label className="flex max-w-xl cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
         <input
@@ -76,7 +76,7 @@ export function StationPicker({
           onChange={(e) => onChangeIncludeIntermediate(e.target.checked)}
           className="h-4 w-4 rounded border-zinc-300 accent-brand dark:border-zinc-600"
         />
-        Include intermediate stations (delays for any station pair along the segment)
+        Include intermediate stations (show delays between stations along the route)
       </label>
     </div>
   )
