@@ -7,16 +7,20 @@ export function StationPicker({
   stationA,
   stationB,
   ignoreDirection,
+  includeIntermediate,
   onChangeA,
   onChangeB,
   onChangeIgnoreDirection,
+  onChangeIncludeIntermediate,
 }: {
   stationA: Station
   stationB: Station
   ignoreDirection: boolean
+  includeIntermediate: boolean
   onChangeA: (value: Station) => void
   onChangeB: (value: Station) => void
   onChangeIgnoreDirection: (value: boolean) => void
+  onChangeIncludeIntermediate: (value: boolean) => void
 }) {
   const handleSwap = () => {
     onChangeA(stationB)
@@ -64,6 +68,15 @@ export function StationPicker({
           className="h-4 w-4 rounded border-zinc-300 accent-brand dark:border-zinc-600"
         />
         Ignore direction (show delays between the stations either way)
+      </label>
+      <label className="flex max-w-xl cursor-pointer items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+        <input
+          type="checkbox"
+          checked={includeIntermediate}
+          onChange={(e) => onChangeIncludeIntermediate(e.target.checked)}
+          className="h-4 w-4 rounded border-zinc-300 accent-brand dark:border-zinc-600"
+        />
+        Include intermediate stations (delays for any station pair along the segment)
       </label>
     </div>
   )

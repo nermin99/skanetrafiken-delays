@@ -17,6 +17,7 @@ function App() {
   const [stationA, setStationA] = useState<Station>('Malmö C')
   const [stationB, setStationB] = useState<Station>('Köpenhamn H')
   const [ignoreDirection, setIgnoreDirection] = useState(true)
+  const [includeIntermediate, setIncludeIntermediate] = useState(true)
   const [granularity, setGranularity] = useState<Granularity>('days')
   const [selMonth, setSelMonth] = useState(initial.month)
   const [selWeek, setSelWeek] = useState(initial.week)
@@ -33,6 +34,7 @@ function App() {
     stationA,
     stationB,
     ignoreDirection,
+    includeIntermediate,
     granularity,
     month: granularity === 'months' ? selMonth : initial.month,
     week: granularity === 'weeks' ? selWeek : initial.week,
@@ -73,9 +75,11 @@ function App() {
             stationA={stationA}
             stationB={stationB}
             ignoreDirection={ignoreDirection}
+            includeIntermediate={includeIntermediate}
             onChangeA={setStationA}
             onChangeB={setStationB}
             onChangeIgnoreDirection={setIgnoreDirection}
+            onChangeIncludeIntermediate={setIncludeIntermediate}
           />
         </Section>
 

@@ -17,6 +17,7 @@ export type DelayQuery = {
   stationA: Station
   stationB: Station
   ignoreDirection: boolean
+  includeIntermediate: boolean
   granularity: Granularity
   month: MonthSel
   week: WeekSel
