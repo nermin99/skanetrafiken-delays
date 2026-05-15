@@ -195,22 +195,31 @@ const requestOptions = {
 async function fetchJourneys(stationA: string, stationB: string, journeyDateTime: Date, event: any) {
   if (event?.MOCK_RESPONSE) return event.MOCK_RESPONSE as JourneyResponse
 
+  const fromPointId = stationToPointMap[stationA]
+  const toPointId = stationToPointMap[stationB]
+
   const url = new URL(`${BASE_URL}/Journey`)
   url.searchParams.set('fromPointType', 'STOP_AREA')
   url.searchParams.set('toPointType', 'STOP_AREA')
   url.searchParams.set('journeyDateTime', journeyDateTime.toISOString())
-  url.searchParams.set('fromPointId', stationToPointMap[stationA])
-  url.searchParams.set('toPointId', stationToPointMap[stationB])
+  url.searchParams.set('fromPointId', fromPointId)
+  url.searchParams.set('toPointId', toPointId)
   url.searchParams.set('journeysAfter', '8')
   console.info(url.toString())
 
   const response = await fetch(url, requestOptions)
   const data = await response.json()
-  // console.dir(data, { depth: null })
 
   if (!data.journeys) {
     throw new Error(`No journeys found for stations ${stationA} to ${stationB} at ${journeyDateTime}`)
   }
+
+  // Filter out journeys with stations that are not in the original search (seems to be a bug in the API that it sometimes returns journeys with other stations)
+  data.journeys = (data.journeys as Journey[]).filter((journey) => {
+    const firstLink = journey.routeLinks[0]
+    const lastLink = journey.routeLinks[journey.routeLinks.length - 1]
+    return firstLink?.from.id2 === fromPointId && lastLink?.to.id2 === toPointId
+  })
 
   return data as JourneyResponse
 }
@@ -219,13 +228,12 @@ async function fetchJourneys(stationA: string, stationB: string, journeyDateTime
 const findEligibleDelayedJourneys = (journeys: Journey[]) => {
   const eligibleDelayedJourneys = []
 
-  // TODO: Filter out journeys with stations that are not in the original search (seems to be a bug in the API that it sometimes returns journeys with other stations)
-  const journeysFiltered = journeys.toSorted(sortJourneysByFromTimeAscending)
+  const journeysSorted = journeys.toSorted(sortJourneysByFromTimeAscending)
 
-  for (let idx = 0; idx < journeysFiltered.length; idx++) {
-    const journey1 = journeysFiltered[idx]
-    const journey2 = journeysFiltered[idx + 1]
-    const journey3 = journeysFiltered?.[idx + 2]
+  for (let idx = 0; idx < journeysSorted.length; idx++) {
+    const journey1 = journeysSorted[idx]
+    const journey2 = journeysSorted[idx + 1]
+    const journey3 = journeysSorted?.[idx + 2]
 
     // Exit if reached end of array
     if (!journey3) break
