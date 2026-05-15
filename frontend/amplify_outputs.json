@@ -1,8 +1,8 @@
 {
   "data": {
-    "url": "https://wiuycjbzjzgmdc3eu7xvhxzbey.appsync-api.eu-north-1.amazonaws.com/graphql",
+    "url": "https://ryjyp227qzemhl4xrfjtc4v45m.appsync-api.eu-north-1.amazonaws.com/graphql",
     "aws_region": "eu-north-1",
-    "api_key": "da2-tsyxruqskzfh3eonfzli4ynl2y",
+    "api_key": "da2-ffjcvynj7vd2dkqm4vsojnvoey",
     "default_authorization_type": "API_KEY",
     "authorization_types": [
       "AWS_IAM"

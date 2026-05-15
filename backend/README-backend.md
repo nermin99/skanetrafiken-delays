@@ -10,7 +10,7 @@ AWS Lambda function that runs hourly, polls the Skånetrafiken API for delayed a
 
 ### Setup
 
-Install npm packages:
+Install dependencies:
 
 ```shell
 npm install
