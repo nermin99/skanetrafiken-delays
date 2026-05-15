@@ -298,7 +298,8 @@ const calculateTotalDelay = (journeys: Journey[], arrivalTimeDiffs: number[]): n
 
   if (!isCancelled(journey3)) return journey3Delay + arrivalTimeDiff1to3
 
-  return -arrivalTimeDiff1to3 // TODO: All three journeys cancelled
+  // In the rare case that three journeys are cancelled in a row (and we unfortunately don't know the total delay), we return a number so high it will catch the attention of the user, meanwhile still including the arrival time differences to somewhat reflect the actual (minimum) delay
+  return 1000 + arrivalTimeDiff1to3 // TODO: Improve edge case
 }
 
 // Lambda handler --------------------------------------------------------------
