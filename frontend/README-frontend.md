@@ -22,7 +22,7 @@ npm start
 
 ## Automated Deployment
 
-The frontend is deployed automatically to GitHub Pages using GitHub Actions CI/CD pipeline. It is triggered on code changes within the `frontend` directory on pushes or PR-merges to the `main` branch.
+The frontend is deployed automatically to GitHub Pages using GitHub Actions CI/CD pipeline. It is triggered on code changes in the `frontend` directory on pushes or PR-merges to the `main` branch.
 
 ---
 

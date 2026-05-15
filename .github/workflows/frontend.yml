@@ -3,10 +3,14 @@ name: Frontend
 on:
   push:
     branches: [main]
-    paths: ['frontend/**']
+    paths:
+      - 'frontend/**'
+      - '!frontend/**/*.md'
   pull_request:
     branches: [main]
-    paths: ['frontend/**']
+    paths:
+      - 'frontend/**'
+      - '!frontend/**/*.md'
 
 jobs:
   CI:

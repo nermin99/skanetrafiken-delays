@@ -3,10 +3,14 @@ name: Backend
 on:
   push:
     branches: [main]
-    paths: ['backend/**']
+    paths:
+      - 'backend/**'
+      - '!backend/**/*.md'
   pull_request:
     branches: [main]
-    paths: ['backend/**']
+    paths:
+      - 'backend/**'
+      - '!backend/**/*.md'
 
 jobs:
   CI:

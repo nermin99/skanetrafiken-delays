@@ -32,7 +32,7 @@ npm run dev
 
 ## Automated Deployment
 
-The backend is deployed automatically to AWS using GitHub Actions CI/CD pipeline. It is triggered on code changes within the `backend` directory on pushes or PR-merges to the `main` branch.
+The backend is deployed automatically to AWS using GitHub Actions CI/CD pipeline. It is triggered on pushes or PR-merges in the `backend` directory to the `main` branch, which builds the Docker image, pushes it to ECR, and updates the Lambda function.
 
 ---
 
