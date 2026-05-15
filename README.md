@@ -6,8 +6,8 @@ Did the train you were on get delayed, but you can't remember which one it was? 
 
 This repository is a monorepo containing three projects:
 
-- **[`frontend/`](frontend/README-frontend.md)** — the [skanetrafiken-delays.se](https://skanetrafiken-delays.se/) web app that lets users browse delays in real time and historically.
-- **[`backend/`](backend/README-backend.md)** — an AWS Lambda function that runs hourly, polls the Skånetrafiken API for delayed and cancelled journeys, and writes them to a DynamoDB table that the frontend reads from.
-- **[`auto-form-filler/`](auto-form-filler/README-auto-form-filler.md)** — a Puppeteer script that automates filling out Skånetrafiken's compensation claim form so you can apply for refunds without doing the clicking yourself.
+- **[`frontend/`](frontend/)** — the [skanetrafiken-delays.se](https://skanetrafiken-delays.se/) web app that lets users browse delays in real time and historically.
+- **[`backend/`](backend/)** — an AWS Lambda function that runs hourly, polls the Skånetrafiken API for delayed and cancelled journeys, and writes them to a DynamoDB table that the frontend reads from.
+- **[`auto-form-filler/`](auto-form-filler/)** — a Puppeteer script that automates filling out Skånetrafiken's compensation claim form so you can apply for refunds without doing the clicking yourself.
 
 ![skanetrafiken-delays screenshot](skanetrafiken-delays.png)
