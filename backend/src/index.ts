@@ -122,7 +122,7 @@ const allTrips = countryCombinationsStations
 // console.log(countryCombinationsStations, countryCombinationsStations.length)
 // console.log(allTrips.length)
 
-// Utils -----------------------------------------------------------------------
+// UTILS ###############################################################################################################
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 /**
@@ -180,7 +180,7 @@ const keepMaxByProperty = (arr: any[], groupByKey: string, maxByKey: string) => 
   )
 }
 
-// API -------------------------------------------------------------------------
+// API #################################################################################################################
 const BASE_URL = 'https://www.skanetrafiken.se/gw-tps/api/v2'
 const requestOptions = {
   method: 'GET',
@@ -224,7 +224,23 @@ async function fetchJourneys(stationA: string, stationB: string, journeyDateTime
   return data as JourneyResponse
 }
 
-// Core Logic ------------------------------------------------------------------
+// CORE LOGIC ##########################################################################################################
+/**
+ * Finds eligible delayed journeys based on the assumption that, with the current timetable
+ * (e.g. 06:59, 07:08, 07:14, 07:29, 07:38, 07:44, 07:59),
+ * it is enough to use a rolling window of 3 journeys (because the total arrival time delta between 3 consecutive
+ * journeys is at minimum 30 minutes, which is greater than 20 minutes).
+ *
+ * In order for a journey to start being considered eligible (i.e. a candidate), the following criteria are necessary: \
+ * Either 1. be delayed by at least 20 minutes, or 2. be cancelled. \
+ * However, neither is sufficient because even if the first journey is delayed or cancelled, the second journey might be
+ * on time and arrive less than 20 minutes after the first journey, making the *effective* delay of the first journey
+ * less than 20 minutes. This can be generalized up to the third journey as well, but we don't have to check further
+ * than that because of the timetable structure described above.
+ *
+ * There is one quirk: if three journeys in a row are cancelled, we unfortunately don't know the total delay, but we can
+ * assume it is at least 20 minutes (actually at least the arrival time difference between the first and third journey).
+ */
 const findEligibleDelayedJourneys = (journeys: Journey[]) => {
   const eligibleDelayedJourneys = []
 
@@ -254,10 +270,13 @@ const findEligibleDelayedJourneys = (journeys: Journey[]) => {
     isStillCandidate = isCancelledOrSufficientlyDelayed(journey3, requiredDelay3)
 
     if (isStillCandidate) {
-      const totalDelay = calculateTotalDelay([journey1, journey2, journey3], [arrivalTimeDiff1to2, arrivalTimeDiff1to3])
+      const effectiveDelay = calculateEffectiveDelay(
+        [journey1, journey2, journey3],
+        [arrivalTimeDiff1to2, arrivalTimeDiff1to3]
+      )
       eligibleDelayedJourneys.push({
         journey: journey1,
-        totalDelay,
+        effectiveDelay,
       })
     }
   }
@@ -284,7 +303,12 @@ const calculateArrivalTimeDiff = (journey1: Journey, journey2: Journey): number 
   return (time2 - time1) / (1000 * 60) // Convert milliseconds to minutes
 }
 
-const calculateTotalDelay = (journeys: Journey[], arrivalTimeDiffs: number[]): number => {
+/**
+ * The effective delay is either just the delay of the first journey, or if the first journey is cancelled then
+ * it is the arrival time difference to the second journey plus any delay of the second journey, and so on for the
+ * third journey if the second is also cancelled.
+ */
+const calculateEffectiveDelay = (journeys: Journey[], arrivalTimeDiffs: number[]): number => {
   const [journey1, journey2, journey3] = journeys
   const [arrivalTimeDiff1to2, arrivalTimeDiff1to3] = arrivalTimeDiffs
 
@@ -302,7 +326,7 @@ const calculateTotalDelay = (journeys: Journey[], arrivalTimeDiffs: number[]): n
   return 1000 + arrivalTimeDiff1to3 // TODO: Improve edge case
 }
 
-// Lambda handler --------------------------------------------------------------
+// LAMBDA HANDLER ######################################################################################################
 const handler = async (event: any) => {
   console.info({ event })
 
@@ -332,7 +356,7 @@ const handler = async (event: any) => {
   }
 
   const delayedJourneysMapped = eligibleDelayedJourneys.flatMap(({ usedSearchTime, journeys }) =>
-    journeys.map(({ journey, totalDelay }) => {
+    journeys.map(({ journey, effectiveDelay }) => {
       const journeyData = journey.routeLinks[0]
 
       const fromTime = journeyData.from.time
@@ -350,7 +374,7 @@ const handler = async (event: any) => {
         trainNumber: String(journeyData.line.runNo ?? ''),
         origin,
         destination,
-        delayMinutes: Math.round(totalDelay),
+        delayMinutes: Math.round(effectiveDelay),
         createdAt: now,
         updatedAt: now,
         __typename: 'Delay',
