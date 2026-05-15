@@ -9,7 +9,7 @@ on:
     paths: ['frontend/**']
 
 jobs:
-  ci:
+  CI:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,8 +40,8 @@ jobs:
       - name: Build
         run: npm run build
 
-  deploy:
-    needs: ci
+  CD:
+    needs: CI
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
