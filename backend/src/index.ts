@@ -2,6 +2,7 @@ import type { Journey, JourneyResponse } from './types/api'
 
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
 const { DynamoDBDocumentClient, BatchWriteCommand } = require('@aws-sdk/lib-dynamodb')
+const { randomUUID } = require('node:crypto')
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -17,7 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const docClient = DynamoDBDocumentClient.from(client)
 
-const DYNAMODB_TABLE_NAME = 'skanetrafiken-delays'
+const DYNAMODB_TABLE_NAME = 'Delay-ue5opsharbbplc2njsts6txnii-NONE'
 const MIN_DELAY_MINUTES = 20
 
 const BASE_NEGATIVE = '../skanetrafiken-api/example-responses/negative/'
@@ -321,31 +322,34 @@ const handler = async (event: any) => {
     if (event?.MOCK_RESPONSE) break
   }
 
-  const delayedJourneysMapped = eligibleDelayedJourneys.flatMap(({ usedSearchTime, journeys }, i) =>
-    journeys.map(({ journey, totalDelay }, j) => {
+  const delayedJourneysMapped = eligibleDelayedJourneys.flatMap(({ usedSearchTime, journeys }) =>
+    journeys.map(({ journey, totalDelay }) => {
       const journeyData = journey.routeLinks[0]
 
       const fromTime = journeyData.from.time
-      const toTime = journeyData.to.time
       const applyDate = new Date(fromTime).toLocaleDateString('sv-SE')
       const applyTime = new Date(fromTime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
+      const origin = pointToStationMap[journeyData.from.id2]
+      const destination = pointToStationMap[journeyData.to.id2]
+      const now = new Date().toISOString()
 
       return {
+        id: randomUUID(),
+        routeId: `${origin}->${destination}`,
         date: applyDate,
-        datetime: getCurrentLocaleDateTimeISOString(i * eligibleDelayedJourneys.length + j), // TODO: Fix off-by-1 error
-        '1_applyTime': applyTime,
-        '2_totalDelay': totalDelay,
-        '3_fromStation': pointToStationMap[journeyData.from.id2],
-        '4_toStation': pointToStationMap[journeyData.to.id2],
-        '5_trainNr': journeyData.line.runNo,
-        '6_isCancelled': isCancelled(journey),
-        '7_fromTime': fromTime,
-        '8_toTime': toTime,
+        time: applyTime,
+        trainNumber: String(journeyData.line.runNo ?? ''),
+        origin,
+        destination,
+        delayMinutes: Math.round(totalDelay),
+        createdAt: now,
+        updatedAt: now,
+        __typename: 'Delay',
       }
     })
   )
 
-  const delayedJourneysGrouped = keepMaxByProperty(delayedJourneysMapped, 'trainNr', 'delay')
+  const delayedJourneysGrouped = keepMaxByProperty(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
   console.info(delayedJourneysGrouped.length)
 
   if (delayedJourneysGrouped.length === 0) {
