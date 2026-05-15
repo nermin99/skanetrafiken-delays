@@ -5,12 +5,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "start": "node dist/index.js",
     "dev": "node src/index.ts",
     "dev:watch": "node --watch src/index.ts",
     "test": "jest",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "node dist/index.js",
     "format:check": "prettier --check src",
     "format:fix": "prettier --write src"
   },
