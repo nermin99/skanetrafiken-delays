@@ -16,12 +16,12 @@ tsconfig.tsbuildinfo
 # Environment files
 .env
 
-# Puppeteer screenshots
+# Test output
 */screenshots/*.png
+coverage
 
 # Amplify Gen 2 workspace (generated outputs / artifacts)
 .amplify
-
 
 # Editor directories and files
 .vscode/*
