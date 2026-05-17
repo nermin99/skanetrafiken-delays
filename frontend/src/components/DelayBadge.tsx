@@ -8,7 +8,7 @@ export function DelayBadge({ minutes }: { minutes: number }) {
         severityClasses(severityOf(minutes)),
       ].join(' ')}
     >
-      {minutes}
+      {`${minutes} min`}
     </span>
   )
 }
