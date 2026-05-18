@@ -362,22 +362,7 @@ const handler = async (event: any) => {
 
   if (event?.ENV === 'DEV') return delayedJourneysGrouped
 
-  const upsertParams = {
-    RequestItems: {
-      [DYNAMODB_TABLE_NAME]: delayedJourneysGrouped.map((item) => ({
-        PutRequest: {
-          Item: item,
-        },
-      })),
-    },
-  }
-  const upsertResponse = await docClient.send(new BatchWriteCommand(upsertParams))
-
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify(upsertResponse),
-  }
-  return response
+  return await uploadToDB(delayedJourneysGrouped)
 }
 
 const mapDelayedJourneysToDB = (eligibleDelayedJourneys: { journey: Journey; effectiveDelay: number }[][]) =>
@@ -428,6 +413,24 @@ const keepMaxByProperty = (arr: any[], groupByKey: string, maxByKey: string) => 
       return acc
     }, {})
   )
+}
+
+const uploadToDB = async (delayedJourneysGrouped: any[]) => {
+  const upsertParams = {
+    RequestItems: {
+      [DYNAMODB_TABLE_NAME]: delayedJourneysGrouped.map((item) => ({
+        PutRequest: {
+          Item: item,
+        },
+      })),
+    },
+  }
+  const response = await docClient.send(new BatchWriteCommand(upsertParams))
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(response),
+  }
 }
 
 // If running locally (not in Lambda)
