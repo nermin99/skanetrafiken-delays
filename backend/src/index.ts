@@ -350,19 +350,19 @@ const handler = async (event: any) => {
 
   const delayedJourneysMapped = mapDelayedJourneysToDynamoDbTable(eligibleDelayedJourneys)
 
-  const delayedJourneysGrouped = keepMaxByProperty(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
-  console.info(delayedJourneysGrouped.length)
+  const worstDelayedJourneys = keepMaxByGroup(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
+  console.info(worstDelayedJourneys.length)
 
-  if (delayedJourneysGrouped.length === 0) {
+  if (worstDelayedJourneys.length === 0) {
     return {
       statusCode: 200,
       body: JSON.stringify({ message: 'No delays found' }),
     }
   }
 
-  if (event?.ENV === 'DEV') return delayedJourneysGrouped
+  if (event?.ENV === 'DEV') return worstDelayedJourneys
 
-  return await uploadDelayedJourneysToDB(delayedJourneysGrouped)
+  return await uploadDelayedJourneysToDB(worstDelayedJourneys)
 }
 
 const mapDelayedJourneysToDynamoDbTable = (eligibleDelayedJourneys: { journey: Journey; effectiveDelay: number }[][]) =>
@@ -401,7 +401,7 @@ const mapDelayedJourneysToDynamoDbTable = (eligibleDelayedJourneys: { journey: J
  *
  * E.g. keeping only the train numbers with the highest delay.
  */
-const keepMaxByProperty = (arr: any[], groupByKey: string, maxByKey: string) => {
+const keepMaxByGroup = (arr: any[], groupByKey: string, maxByKey: string) => {
   return Object.values(
     arr.reduce((acc, curr) => {
       const existing = acc[curr[groupByKey]]
