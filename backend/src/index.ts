@@ -1,7 +1,7 @@
 import type { Journey, JourneyResponse } from './types/api'
 
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
-const { DynamoDBDocumentClient, BatchWriteCommand } = require('@aws-sdk/lib-dynamodb')
+const { DynamoDBDocumentClient, BatchWriteCommand, paginateQuery } = require('@aws-sdk/lib-dynamodb')
 const { randomUUID } = require('node:crypto')
 const dotenv = require('dotenv')
 dotenv.config()
@@ -19,6 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 const docClient = DynamoDBDocumentClient.from(client)
 
 const DYNAMODB_TABLE_NAME = 'Delay-ue5opsharbbplc2njsts6txnii-NONE'
+const DYNAMODB_PARTITION_DATE_INDEX = 'delaysByPartitionAndDate'
 const MIN_DELAY_MINUTES = 20
 
 const BASE_NEGATIVE = '../skanetrafiken-api/example-responses/negative/'
@@ -337,8 +338,17 @@ const handler = async (event: any) => {
 
   if (event?.ENV === 'DEV') return worstDelayedJourneys
 
-  console.info('Uploading delayed journeys to DynamoDB...')
-  return await uploadDelayedJourneysToDB(worstDelayedJourneys)
+  console.info('Checking against existing DynamoDB entries...')
+  const delaysToUpload = await checkAgainstExistingDelays(worstDelayedJourneys)
+
+  console.info(`Uploading ${delaysToUpload.length} delayed journeys to DynamoDB...`)
+  if (delaysToUpload.length === 0) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'No delays to upload (all already recorded with equal or greater delay)' }),
+    }
+  }
+  return await uploadDelayedJourneysToDB(delaysToUpload)
 }
 
 const mapDelayedJourneysToDynamoDbTable = (eligibleDelayedJourneys: { journey: Journey; effectiveDelay: number }[][]) =>
@@ -399,10 +409,43 @@ const keepMaxPerGroup = (arr: any[], groupByKey: string, maxByKey: string) => {
   )
 }
 
-const uploadDelayedJourneysToDB = async (delayedJourneysGrouped: any[]) => {
+/**
+ * Across lambda invocations, the same train can show up as delayed from multiple origins on the same date. E.g. if a
+ * train is very delayed from one station, there is a reasonable chance it will also be delayed from the next station.
+ * We therefore make sure to keep only the journey with the highest delay per train number and date.
+ */
+const checkAgainstExistingDelays = async (candidates: any[]): Promise<any[]> => {
+  const dates = candidates.map((c) => c.date).sort()
+  const existing = new Map<string, any>()
+
+  const pages = paginateQuery(
+    { client: docClient },
+    {
+      TableName: DYNAMODB_TABLE_NAME,
+      IndexName: DYNAMODB_PARTITION_DATE_INDEX,
+      KeyConditionExpression: 'partition = :p AND #date BETWEEN :start AND :end',
+      ExpressionAttributeNames: { '#date': 'date' },
+      ExpressionAttributeValues: { ':p': 'DELAY', ':start': dates[0], ':end': dates[dates.length - 1] },
+    }
+  )
+  for await (const page of pages) {
+    for (const item of page.Items ?? []) {
+      existing.set(`${item.date}#${item.trainNumber}`, item)
+    }
+  }
+
+  return candidates.flatMap((c) => {
+    const prev = existing.get(`${c.date}#${c.trainNumber}`)
+    if (!prev) return [c]
+    if (c.delayMinutes > prev.delayMinutes) return [{ ...c, id: prev.id, createdAt: prev.createdAt }]
+    return []
+  })
+}
+
+const uploadDelayedJourneysToDB = async (delayedJourneys: any[]) => {
   const upsertParams = {
     RequestItems: {
-      [DYNAMODB_TABLE_NAME]: delayedJourneysGrouped.map((item) => ({
+      [DYNAMODB_TABLE_NAME]: delayedJourneys.map((item) => ({
         PutRequest: {
           Item: item,
         },
