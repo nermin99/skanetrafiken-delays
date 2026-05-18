@@ -139,13 +139,24 @@ const createDateTime = (timeStr = '', dateStr = '') => {
   return new Date(`${dateStr}T${timeStr}`)
 }
 
-const getCurrentDateTimeFlooredWithOffset = (hoursOffset: number) => {
+/**
+ * Returns the current UTC time floored to the hour, optionally shifted into the past by `offsetHours`.
+ *
+ * @param offsetHours Number of hours to shift into the past from the current time. Defaults to 0.
+ *
+ * @example
+ * // At 08:26 UTC (or 10:26 UTC+2):
+ * getUtcDateTimeFloored(0) // 2026-06-30T08:00:00.000Z
+ * getUtcDateTimeFloored(1) // 2026-06-30T07:00:00.000Z
+ */
+const getUtcDateTimeFloored = (offsetHours = 0) => {
   const now = new Date()
 
-  const delayed = new Date(now.getTime() - hoursOffset * 60 * 60 * 1000)
-  delayed.setUTCMinutes(0, 0, 0)
+  const offsetMilliseconds = offsetHours * 60 * 60 * 1000
+  const utcDateTimeFloored = new Date(now.getTime() - offsetMilliseconds)
+  utcDateTimeFloored.setUTCMinutes(0, 0, 0)
 
-  return delayed
+  return utcDateTimeFloored
 }
 
 const getCurrentLocaleDateTimeISOString = (offsetInMs = 0) =>
@@ -183,9 +194,10 @@ async function fetchJourneys(stationA: string, stationB: string, journeyDateTime
   const url = new URL(`${BASE_URL}/Journey`)
   url.searchParams.set('fromPointType', 'STOP_AREA')
   url.searchParams.set('toPointType', 'STOP_AREA')
-  url.searchParams.set('journeyDateTime', journeyDateTime.toISOString())
   url.searchParams.set('fromPointId', fromPointId)
   url.searchParams.set('toPointId', toPointId)
+  url.searchParams.set('journeyDateTime', journeyDateTime.toISOString())
+  url.searchParams.set('arrival', 'false')
   url.searchParams.set('journeysAfter', '8')
   console.info(url.toString())
 
@@ -314,8 +326,8 @@ const handler = async (event: any) => {
 
   const eligibleDelayedJourneys = []
 
-  const hoursOffset = 2
-  const journeyDateTime = event?.TIME ?? getCurrentDateTimeFlooredWithOffset(hoursOffset)
+  const offsetHours = 2
+  const journeyDateTime = event?.TIME ?? getUtcDateTimeFloored(offsetHours)
 
   let tripCount = 1
   for (const { stationA, stationB } of allTrips) {
