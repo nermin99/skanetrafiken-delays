@@ -83,23 +83,8 @@ const stationPoints: StationPoint[] = [
   },
 ]
 
-const stations = stationPoints.map(({ station }) => station)
-const points = stationPoints.map(({ point }) => point)
 const stationToPointMap = Object.fromEntries(stationPoints.map(({ point, station }) => [station, point]))
 const pointToStationMap = Object.fromEntries(stationPoints.map(({ point, station }) => [point, station]))
-const adjacentStations = stationPoints.slice(0, -1).map((current, index) => ({
-  stationA: current.station,
-  stationB: stationPoints[index + 1].station,
-}))
-const adjacentStationsReversed = adjacentStations
-  .map((pair) => ({ stationA: pair.stationB, stationB: pair.stationA }))
-  .toReversed()
-const allCombinationsStations = stations.flatMap((stationA, i) =>
-  stations.slice(i + 1).map((stationB) => ({ stationA, stationB }))
-)
-const allCombinationsStationsReversed = stations
-  .toReversed()
-  .flatMap((stationA, i) => stations.slice(i + 1).map((stationB) => ({ stationA, stationB })))
 const countryCombinationsStations = stationPoints.flatMap((stationA) =>
   stationPoints
     .filter((stationB) => stationA.country !== stationB.country)
@@ -110,34 +95,10 @@ const countryCombinationsStations = stationPoints.flatMap((stationA) =>
 )
 
 const allTrips = countryCombinationsStations
-
-// console.log(stations)
-// console.log(points)
-// console.log(stationToPointMap['Malmö C'])
-// console.log(pointToStationMap['9021012080000000'])
-// console.log(adjacentStations, adjacentStations.length)
-// console.log(adjacentStationsReversed, adjacentStationsReversed.length)
-// console.log(allCombinationsStations, allCombinationsStations.length)
-// console.log(allCombinationsStationsReversed, allCombinationsStationsReversed.length)
-// console.log(countryCombinationsStations, countryCombinationsStations.length)
-// console.log(allTrips.length)
+// console.log(allTrips)
 
 // UTILS ###############################################################################################################
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
-
-/**
- * @param timeStr HH:MM
- * @param dateStr YYYY-MM-DD
- */
-const createDateTime = (timeStr = '', dateStr = '') => {
-  if (!dateStr && !timeStr) return new Date()
-
-  if (!dateStr) {
-    dateStr = new Date().toISOString().split('T')[0]
-  }
-
-  return new Date(`${dateStr}T${timeStr}`)
-}
 
 /**
  * Returns the current UTC time floored to the hour, optionally shifted into the past by `offsetHours`.
@@ -159,20 +120,19 @@ const getUtcDateTimeFloored = (offsetHours = 0) => {
   return utcDateTimeFloored
 }
 
-const getCurrentLocaleDateTimeISOString = (offsetInMs = 0) =>
-  new Date(Date.now() + offsetInMs)
-    .toLocaleString('sv-SE', {
-      timeZone: 'Europe/Stockholm',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      fractionalSecondDigits: 3,
-    })
-    .replace(',', '.')
-    .replace(' ', 'T')
+/**
+ * @param timeStr HH:MM
+ * @param dateStr YYYY-MM-DD
+ */
+const createDateTime = (timeStr = '', dateStr = '') => {
+  if (!dateStr && !timeStr) return new Date()
+
+  if (!dateStr) {
+    dateStr = new Date().toISOString().split('T')[0]
+  }
+
+  return new Date(`${dateStr}T${timeStr}`)
+}
 
 // API #################################################################################################################
 const BASE_URL = 'https://www.skanetrafiken.se/gw-tps/api/v2'
