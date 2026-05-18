@@ -143,3 +143,9 @@ npx ampx sandbox
 1. **Add the role ARN as a GitHub repo secret** in Settings → Secrets and variables → Actions:
    - Name: `AWS_DEPLOY_ROLE_ARN`
    - Value: `arn:aws:iam::<account-id>:role/amplify-pipeline-deploy`
+
+---
+
+## TODO
+
+- [ ] Cache API requests
