@@ -338,10 +338,7 @@ const handler = async (event: any) => {
     const delayedJourneys = findEligibleDelayedJourneys(journeyResponse.journeys)
 
     if (delayedJourneys.length > 0) {
-      eligibleDelayedJourneys.push({
-        usedSearchTime: journeyResponse.usedSearchTime,
-        journeys: delayedJourneys,
-      })
+      eligibleDelayedJourneys.push(delayedJourneys)
     }
 
     // Rate limiting
@@ -383,10 +380,8 @@ const handler = async (event: any) => {
   return response
 }
 
-const mapDelayedJourneysToDB = (
-  eligibleDelayedJourneys: { usedSearchTime: string; journeys: { journey: Journey; effectiveDelay: number }[] }[]
-) =>
-  eligibleDelayedJourneys.flatMap(({ usedSearchTime, journeys }) =>
+const mapDelayedJourneysToDB = (eligibleDelayedJourneys: { journey: Journey; effectiveDelay: number }[][]) =>
+  eligibleDelayedJourneys.flatMap((journeys) =>
     journeys.map(({ journey, effectiveDelay }) => {
       const journeyData = journey.routeLinks[0]
 
