@@ -152,6 +152,9 @@ async function fetchJourneys(stationA: string, stationB: string, journeyDateTime
   const fromPointId = stationToPointMap[stationA]
   const toPointId = stationToPointMap[stationB]
 
+  if (!fromPointId) throw new Error(`Unknown station "${stationA}". No mapped point id`)
+  if (!toPointId) throw new Error(`Unknown station "${stationB}". No mapped point id`)
+
   const url = new URL(`${BASE_URL}/Journey`)
   url.searchParams.set('fromPointType', 'STOP_AREA')
   url.searchParams.set('toPointType', 'STOP_AREA')
@@ -163,10 +166,13 @@ async function fetchJourneys(stationA: string, stationB: string, journeyDateTime
   console.info(url.toString())
 
   const response = await fetch(url, requestOptions)
-  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText} (${stationA} -> ${stationB})`)
+  }
 
+  const data = await response.json()
   if (!data.journeys) {
-    throw new Error(`No journeys found for stations ${stationA} to ${stationB} at ${journeyDateTime}`)
+    throw new Error(`No journeys found for ${stationA} -> ${stationB} @ ${journeyDateTime}`)
   }
 
   // Filter out journeys with stations that are not in the original search (seems to be a bug in the API that it sometimes returns journeys with other stations)
@@ -288,7 +294,7 @@ const handler = async (event: any) => {
   const eligibleDelayedJourneys = []
 
   const offsetHours = 2
-  const journeyDateTime = event?.TIME ?? getUtcDateTimeFloored(offsetHours)
+  const journeyDateTime: Date = event?.TIME ?? getUtcDateTimeFloored(offsetHours)
 
   let tripCount = 1
   for (const { stationA, stationB } of allTrips) {
@@ -336,9 +342,12 @@ const mapDelayedJourneysToDynamoDbTable = (eligibleDelayedJourneys: { journey: J
       hour: '2-digit',
       minute: '2-digit',
     })
+    const now = new Date().toISOString()
     const origin = pointToStationMap[journeyData.from.id2]
     const destination = pointToStationMap[journeyData.to.id2]
-    const now = new Date().toISOString()
+
+    if (!origin) throw new Error(`Unknown origin point id: ${journeyData.from.id2}`)
+    if (!destination) throw new Error(`Unknown destination point id: ${journeyData.to.id2}`)
 
     return {
       id: randomUUID(),
@@ -390,6 +399,11 @@ const uploadDelayedJourneysToDB = async (delayedJourneysGrouped: any[]) => {
     },
   }
   const response = await docClient.send(new BatchWriteCommand(upsertParams))
+
+  const unprocessed = response.UnprocessedItems?.[DYNAMODB_TABLE_NAME] ?? []
+  if (unprocessed.length > 0) {
+    throw new Error(`DynamoDB BatchWrite returned ${unprocessed.length} unprocessed item(s)`)
+  }
 
   return {
     statusCode: 200,
