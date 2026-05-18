@@ -20,6 +20,13 @@
               "isRequired": true,
               "attributes": []
             },
+            "partition": {
+              "name": "partition",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
             "routeId": {
               "name": "routeId",
               "isArray": false,
@@ -92,6 +99,17 @@
             {
               "type": "model",
               "properties": {}
+            },
+            {
+              "type": "key",
+              "properties": {
+                "name": "delaysByPartitionAndDate",
+                "queryField": "listDelaysByDate",
+                "fields": [
+                  "partition",
+                  "date"
+                ]
+              }
             },
             {
               "type": "key",
