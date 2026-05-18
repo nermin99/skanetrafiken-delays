@@ -59,13 +59,13 @@ aws ecr get-login-password --region eu-north-1 | docker login --username AWS --p
 docker build -t 791739690501.dkr.ecr.eu-north-1.amazonaws.com/nermin99/skanetrafiken-delays:latest .
 ```
 
-2. Push image to AWS ECR
+1. Push image to AWS ECR
 
 ```sh
 docker push 791739690501.dkr.ecr.eu-north-1.amazonaws.com/nermin99/skanetrafiken-delays:latest
 ```
 
-3. Update lambda function to use latest image
+1. Update lambda function to use latest image
 
 ```sh
 aws lambda update-function-code \
@@ -73,4 +73,11 @@ aws lambda update-function-code \
     --image-uri 791739690501.dkr.ecr.eu-north-1.amazonaws.com/nermin99/skanetrafiken-delays:latest
 ```
 
-4. *Note*: Remember to delete old images in ECR if they are not needed anymore.
+1. *Note*: Remember to delete old images in ECR if they are not needed anymore.
+
+---
+
+## TODO
+
+- [ ] Handle edge case, when more than 3 trains are cancelled, better
+- [ ] Use deterministic date+trainNumber as PK instead of random UUID?
