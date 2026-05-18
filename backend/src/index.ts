@@ -361,6 +361,7 @@ const mapDelayedJourneysToDynamoDbTable = (eligibleDelayedJourneys: { journey: J
 
     return {
       id: randomUUID(),
+      partition: 'DELAY',
       routeId: `${origin}->${destination}`,
       date: applyDate,
       time: applyTime,
