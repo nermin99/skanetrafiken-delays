@@ -348,7 +348,7 @@ const handler = async (event: any) => {
     if (event?.MOCK_RESPONSE) break
   }
 
-  const delayedJourneysMapped = mapDelayedJourneysToDB(eligibleDelayedJourneys)
+  const delayedJourneysMapped = mapDelayedJourneysToDynamoDbTable(eligibleDelayedJourneys)
 
   const delayedJourneysGrouped = keepMaxByProperty(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
   console.info(delayedJourneysGrouped.length)
@@ -362,41 +362,45 @@ const handler = async (event: any) => {
 
   if (event?.ENV === 'DEV') return delayedJourneysGrouped
 
-  return await uploadToDB(delayedJourneysGrouped)
+  return await uploadDelayedJourneysToDB(delayedJourneysGrouped)
 }
 
-const mapDelayedJourneysToDB = (eligibleDelayedJourneys: { journey: Journey; effectiveDelay: number }[][]) =>
-  eligibleDelayedJourneys.flatMap((journeys) =>
-    journeys.map(({ journey, effectiveDelay }) => {
-      const journeyData = journey.routeLinks[0]
+const mapDelayedJourneysToDynamoDbTable = (eligibleDelayedJourneys: { journey: Journey; effectiveDelay: number }[][]) =>
+  eligibleDelayedJourneys.flat().map(({ journey, effectiveDelay }) => {
+    const journeyData = journey.routeLinks[0]
 
-      const fromTime = journeyData.from.time
-      const applyDate = new Date(fromTime).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' })
-      const applyTime = new Date(fromTime).toLocaleTimeString('sv-SE', {
-        timeZone: 'Europe/Stockholm',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-      const origin = pointToStationMap[journeyData.from.id2]
-      const destination = pointToStationMap[journeyData.to.id2]
-      const now = new Date().toISOString()
-
-      return {
-        id: randomUUID(),
-        routeId: `${origin}->${destination}`,
-        date: applyDate,
-        time: applyTime,
-        trainNumber: String(journeyData.line.runNo ?? ''),
-        origin,
-        destination,
-        delayMinutes: Math.round(effectiveDelay),
-        createdAt: now,
-        updatedAt: now,
-        __typename: 'Delay',
-      }
+    const fromTime = journeyData.from.time
+    const applyDate = new Date(fromTime).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' })
+    const applyTime = new Date(fromTime).toLocaleTimeString('sv-SE', {
+      timeZone: 'Europe/Stockholm',
+      hour: '2-digit',
+      minute: '2-digit',
     })
-  )
+    const origin = pointToStationMap[journeyData.from.id2]
+    const destination = pointToStationMap[journeyData.to.id2]
+    const now = new Date().toISOString()
 
+    return {
+      id: randomUUID(),
+      routeId: `${origin}->${destination}`,
+      date: applyDate,
+      time: applyTime,
+      trainNumber: String(journeyData.line.runNo ?? ''),
+      origin,
+      destination,
+      delayMinutes: Math.round(effectiveDelay),
+      createdAt: now,
+      updatedAt: now,
+      __typename: 'Delay',
+    }
+  })
+
+/**
+ * Groups an array of objects by `groupByKey` and retains only one object per group - either with the highest value for
+ * a given `maxByKey`, or the one marked as cancelled.
+ *
+ * E.g. keeping only the train numbers with the highest delay.
+ */
 const keepMaxByProperty = (arr: any[], groupByKey: string, maxByKey: string) => {
   return Object.values(
     arr.reduce((acc, curr) => {
@@ -415,7 +419,7 @@ const keepMaxByProperty = (arr: any[], groupByKey: string, maxByKey: string) => 
   )
 }
 
-const uploadToDB = async (delayedJourneysGrouped: any[]) => {
+const uploadDelayedJourneysToDB = async (delayedJourneysGrouped: any[]) => {
   const upsertParams = {
     RequestItems: {
       [DYNAMODB_TABLE_NAME]: delayedJourneysGrouped.map((item) => ({
