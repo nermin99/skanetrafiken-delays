@@ -44,24 +44,32 @@ export async function fetchDelays(query: DelayQuery): Promise<DelayRecord[]> {
   if (!rangeRows) {
     // Single Query on the (partition, date) GSI returns every delay in the date range.
     // The route filter is applied client-side because DynamoDB can't match a set of partition keys in one Query.
-    const response = await client.models.Delay.listDelaysByDate({
-      partition: 'DELAY',
-      date: { between: [start, end] },
-    })
-
-    if (response.errors?.length) {
-      throw new Error(response.errors.map((e) => e.message).join('; '))
+    // AppSync caps each page (default 100), so we follow nextToken until DynamoDB has nothing left.
+    rangeRows = []
+    const queryInput = { partition: 'DELAY', date: { between: [start, end] as [string, string] } }
+    let response = await client.models.Delay.listDelaysByDate(queryInput, { limit: 1000 })
+    while (true) {
+      if (response.errors?.length) {
+        throw new Error(response.errors.map((e) => e.message).join('; '))
+      }
+      for (const d of response.data) {
+        rangeRows.push({
+          id: d.id,
+          date: d.date,
+          time: d.time,
+          trainNumber: d.trainNumber,
+          origin: d.origin as Station,
+          destination: d.destination as Station,
+          delayMinutes: d.delayMinutes,
+        })
+      }
+      if (!response.nextToken) break
+      response = await client.models.Delay.listDelaysByDate(queryInput, {
+        limit: 1000,
+        nextToken: response.nextToken,
+      })
     }
 
-    rangeRows = response.data.map((d) => ({
-      id: d.id,
-      date: d.date,
-      time: d.time,
-      trainNumber: d.trainNumber,
-      origin: d.origin as Station,
-      destination: d.destination as Station,
-      delayMinutes: d.delayMinutes,
-    }))
     setCachedRows(start, end, rangeRows)
   }
 
