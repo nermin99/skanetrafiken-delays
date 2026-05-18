@@ -162,6 +162,7 @@ const getUtcDateTimeFloored = (offsetHours = 0) => {
 const getCurrentLocaleDateTimeISOString = (offsetInMs = 0) =>
   new Date(Date.now() + offsetInMs)
     .toLocaleString('sv-SE', {
+      timeZone: 'Europe/Stockholm',
       year: 'numeric',
       month: 'numeric',
       day: 'numeric',
@@ -390,8 +391,12 @@ const mapDelayedJourneysToDB = (
       const journeyData = journey.routeLinks[0]
 
       const fromTime = journeyData.from.time
-      const applyDate = new Date(fromTime).toLocaleDateString('sv-SE')
-      const applyTime = new Date(fromTime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
+      const applyDate = new Date(fromTime).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' })
+      const applyTime = new Date(fromTime).toLocaleTimeString('sv-SE', {
+        timeZone: 'Europe/Stockholm',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
       const origin = pointToStationMap[journeyData.from.id2]
       const destination = pointToStationMap[journeyData.to.id2]
       const now = new Date().toISOString()
