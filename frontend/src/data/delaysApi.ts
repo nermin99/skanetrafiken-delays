@@ -3,6 +3,7 @@ import type { Schema } from '../../amplify/data/resource'
 import { STATIONS } from '../data/stations'
 import type { DelayQuery, DelayRecord, Station } from '../types'
 import { rangeForQuery } from '../lib/dates'
+import { getCachedRows, setCachedRows } from './delaysCache'
 
 const client = generateClient<Schema>()
 
@@ -37,20 +38,22 @@ export async function fetchDelays(query: DelayQuery): Promise<DelayRecord[]> {
   const { start, end } = rangeForQuery(query)
   const wantedRouteIds = new Set(routeIdsForQuery(query))
 
-  // Single Query on the (partition, date) GSI returns every delay in the date range.
-  // The route filter is applied client-side because DynamoDB can't match a set of partition keys in one Query.
-  const response = await client.models.Delay.listDelaysByDate({
-    partition: 'DELAY',
-    date: { between: [start, end] },
-  })
+  // All rows for a date range share one cache entry (keyed by start|end). The route filter is applied on top, so any
+  // station/direction/intermediate change within the same range is served from cache without hitting DynamoDB.
+  let rangeRows = getCachedRows(start, end)
+  if (!rangeRows) {
+    // Single Query on the (partition, date) GSI returns every delay in the date range.
+    // The route filter is applied client-side because DynamoDB can't match a set of partition keys in one Query.
+    const response = await client.models.Delay.listDelaysByDate({
+      partition: 'DELAY',
+      date: { between: [start, end] },
+    })
 
-  if (response.errors?.length) {
-    throw new Error(response.errors.map((e) => e.message).join('; '))
-  }
+    if (response.errors?.length) {
+      throw new Error(response.errors.map((e) => e.message).join('; '))
+    }
 
-  return response.data
-    .filter((d) => wantedRouteIds.has(`${d.origin}->${d.destination}`))
-    .map((d) => ({
+    rangeRows = response.data.map((d) => ({
       id: d.id,
       date: d.date,
       time: d.time,
@@ -59,4 +62,8 @@ export async function fetchDelays(query: DelayQuery): Promise<DelayRecord[]> {
       destination: d.destination as Station,
       delayMinutes: d.delayMinutes,
     }))
+    setCachedRows(start, end, rangeRows)
+  }
+
+  return rangeRows.filter((d) => wantedRouteIds.has(`${d.origin}->${d.destination}`))
 }

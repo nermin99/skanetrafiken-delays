@@ -148,4 +148,4 @@ npx ampx sandbox
 
 ## TODO
 
-- [ ] Cache API requests
+- [x] Cache API requests
