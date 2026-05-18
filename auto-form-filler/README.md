@@ -21,3 +21,9 @@ Edit the `INPUT` object at the top of [auto-form-filler.js](auto-form-filler.js)
 ```shell
 npm start
 ```
+
+---
+
+## TODO
+
+- [ ] Possible to use API directly instead of puppeteer?
