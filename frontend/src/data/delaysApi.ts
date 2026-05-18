@@ -35,24 +35,21 @@ export async function fetchDelays(query: DelayQuery): Promise<DelayRecord[]> {
   if (query.stationA === query.stationB) return []
 
   const { start, end } = rangeForQuery(query)
-  const routeIds = routeIdsForQuery(query)
+  const wantedRouteIds = new Set(routeIdsForQuery(query))
 
-  const responses = await Promise.all(
-    routeIds.map((routeId) =>
-      client.models.Delay.listDelaysByRouteAndDate({
-        routeId,
-        date: { between: [start, end] },
-      })
-    )
-  )
+  // Single Query on the (partition, date) GSI returns every delay in the date range.
+  // The route filter is applied client-side because DynamoDB can't match a set of partition keys in one Query.
+  const response = await client.models.Delay.listDelaysByDate({
+    partition: 'DELAY',
+    date: { between: [start, end] },
+  })
 
-  const errors = responses.flatMap((r) => r.errors ?? [])
-  if (errors.length) {
-    throw new Error(errors.map((e) => e.message).join('; '))
+  if (response.errors?.length) {
+    throw new Error(response.errors.map((e) => e.message).join('; '))
   }
 
-  return responses
-    .flatMap((r) => r.data)
+  return response.data
+    .filter((d) => wantedRouteIds.has(`${d.origin}->${d.destination}`))
     .map((d) => ({
       id: d.id,
       date: d.date,
