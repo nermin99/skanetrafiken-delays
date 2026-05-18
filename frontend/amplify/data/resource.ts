@@ -3,6 +3,7 @@ import { a, defineData, type ClientSchema } from '@aws-amplify/backend'
 const schema = a.schema({
   Delay: a
     .model({
+      partition: a.string().required(), // Constant ("DELAY") so a single Query on this GSI returns every delay in a date range.
       routeId: a.string().required(),
       date: a.string().required(),
       time: a.string().required(),
@@ -13,6 +14,7 @@ const schema = a.schema({
     })
     .secondaryIndexes((idx) => [
       idx('routeId').sortKeys(['date']).queryField('listDelaysByRouteAndDate'),
+      idx('partition').sortKeys(['date']).queryField('listDelaysByDate'),
     ])
     .authorization((allow) => [allow.publicApiKey().to(['read'])]),
 })
