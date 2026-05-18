@@ -139,10 +139,10 @@ const createDateTime = (timeStr = '', dateStr = '') => {
   return new Date(`${dateStr}T${timeStr}`)
 }
 
-const getCurrentDateTimeFlooredWithDelay = (hoursDelay = 2) => {
+const getCurrentDateTimeFlooredWithOffset = (hoursOffset: number) => {
   const now = new Date()
 
-  const delayed = new Date(now.getTime() - hoursDelay * 60 * 60 * 1000)
+  const delayed = new Date(now.getTime() - hoursOffset * 60 * 60 * 1000)
   delayed.setUTCMinutes(0, 0, 0)
 
   return delayed
@@ -314,7 +314,8 @@ const handler = async (event: any) => {
 
   const eligibleDelayedJourneys = []
 
-  const journeyDateTime = event?.TIME ?? getCurrentDateTimeFlooredWithDelay()
+  const hoursOffset = 2
+  const journeyDateTime = event?.TIME ?? getCurrentDateTimeFlooredWithOffset(hoursOffset)
 
   let tripCount = 1
   for (const { stationA, stationB } of allTrips) {
