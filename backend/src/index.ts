@@ -163,7 +163,7 @@ async function fetchJourneys(stationA: string, stationB: string, journeyDateTime
   url.searchParams.set('journeyDateTime', journeyDateTime.toISOString())
   url.searchParams.set('arrival', 'false')
   url.searchParams.set('journeysAfter', '8')
-  console.info(url.toString())
+  // console.log(url.toString())
 
   const response = await fetch(url, requestOptions)
   if (!response.ok) {
@@ -298,27 +298,36 @@ const handler = async (event: any) => {
 
   let tripCount = 1
   for (const { stationA, stationB } of allTrips) {
-    console.log(`${tripCount}/${allTrips.length}`)
+    console.group(`Trip ${tripCount}/${allTrips.length}: ${stationA} -> ${stationB}`)
 
+    console.log('Fetching trips...')
     const journeyResponse = await fetchJourneys(stationA, stationB, journeyDateTime, event)
+
+    console.log('Finding eligible delayed journeys...')
     const delayedJourneys = findEligibleDelayedJourneys(journeyResponse.journeys)
 
     if (delayedJourneys.length > 0) {
       eligibleDelayedJourneys.push(delayedJourneys)
+      console.log(`Found ${delayedJourneys.length} eligible delayed journey(s).`)
+    } else {
+      console.log('No eligible delayed journeys found.')
     }
 
     // Rate limiting
     await sleep(250)
     tripCount++
 
+    console.groupEnd()
     if (event?.MOCK_RESPONSE) break
   }
 
+  console.info('Mapping delayed journeys to DynamoDB table...')
   const delayedJourneysMapped = mapDelayedJourneysToDynamoDbTable(eligibleDelayedJourneys)
 
-  const worstDelayedJourneys = keepMaxByGroup(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
-  console.info(worstDelayedJourneys.length)
+  console.info('Keeping only the worst delayed journey per train number...')
+  const worstDelayedJourneys = keepMaxPerGroup(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
 
+  console.info(`Found ${worstDelayedJourneys.length} delayed journeys`)
   if (worstDelayedJourneys.length === 0) {
     return {
       statusCode: 200,
@@ -328,6 +337,7 @@ const handler = async (event: any) => {
 
   if (event?.ENV === 'DEV') return worstDelayedJourneys
 
+  console.info('Uploading delayed journeys to DynamoDB...')
   return await uploadDelayedJourneysToDB(worstDelayedJourneys)
 }
 
@@ -370,7 +380,7 @@ const mapDelayedJourneysToDynamoDbTable = (eligibleDelayedJourneys: { journey: J
  *
  * E.g. keeping only the train numbers with the highest delay.
  */
-const keepMaxByGroup = (arr: any[], groupByKey: string, maxByKey: string) => {
+const keepMaxPerGroup = (arr: any[], groupByKey: string, maxByKey: string) => {
   return Object.values(
     arr.reduce((acc, curr) => {
       const existing = acc[curr[groupByKey]]
