@@ -322,19 +322,19 @@ const handler = async (event: any) => {
     if (event?.MOCK_RESPONSE) break
   }
 
-  console.info('Mapping delayed journeys to DynamoDB table...')
-  const delayedJourneysMapped = mapDelayedJourneysToDynamoDbTable(eligibleDelayedJourneys)
-
-  console.info('Keeping only the worst delayed journey per train number...')
-  const worstDelayedJourneys = keepMaxPerGroup(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
-
-  console.info(`Found ${worstDelayedJourneys.length} delayed journeys`)
-  if (worstDelayedJourneys.length === 0) {
+  console.info(`Found ${eligibleDelayedJourneys.length} delayed journeys in total.`)
+  if (eligibleDelayedJourneys.length === 0) {
     return {
       statusCode: 200,
       body: JSON.stringify({ message: 'No delays found' }),
     }
   }
+
+  console.info('Mapping delayed journeys to DynamoDB table...')
+  const delayedJourneysMapped = mapDelayedJourneysToDynamoDbTable(eligibleDelayedJourneys)
+
+  console.info('Keeping only the worst delayed journey per train number...')
+  const worstDelayedJourneys = keepMaxPerGroup(delayedJourneysMapped, 'trainNumber', 'delayMinutes')
 
   if (event?.ENV === 'DEV') return worstDelayedJourneys
 
