@@ -18,10 +18,9 @@ export function useTheme() {
     document.documentElement.classList.toggle('dark', isDark)
     localStorage.setItem(STORAGE_KEY, theme)
 
-    // Tint the mobile browser chrome (e.g. iOS Safari's status bar) to match the page header,
-    // reading the same brand tokens the header uses so the two can't drift apart. index.html ships
-    // a prefers-color-scheme pair for the pre-JS paint; point both at the active theme's colour so
-    // the browser shows it whichever media query matches (e.g. a manual toggle against the OS).
+    // Tint the browser chrome to match the header on manual toggles — index.html's prefers-color-scheme
+    // tags only track the OS. (iOS Safari 18+ ignores theme-color and uses the body background from
+    // index.css, which already follows the .dark class set above; this is for Chrome/Android et al.)
     const brand = getComputedStyle(document.documentElement)
       .getPropertyValue(isDark ? '--color-brand-dark' : '--color-brand')
       .trim()

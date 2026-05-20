@@ -30,15 +30,20 @@ button:disabled,
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: #f7f7f8;
+  background: var(--color-brand);
   color: #1c1c1f;
 }
 
 .dark body {
-  background: #16171d;
+  background: var(--color-brand-dark);
   color: #e7e7ea;
 }
 
 #root {
   min-height: 100svh;
+  background: #f7f7f8;
+}
+
+.dark #root {
+  background: #16171d;
 }
