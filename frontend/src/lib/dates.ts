@@ -194,7 +194,7 @@ export function describePeriod(query: DelayQuery): string {
   if (query.granularity === 'months') return monthName(query.month.year, query.month.month)
   if (query.granularity === 'weeks') {
     const start = startOfISOWeekByNumber(query.week.year, query.week.week)
-    return `week ${query.week.week}, ${query.week.year} (${formatRange(start, addDays(start, 6))})`
+    return `Week ${query.week.week}, ${query.week.year} (${formatRange(start, addDays(start, 6))})`
   }
   return formatDayLabel(query.day)
 }

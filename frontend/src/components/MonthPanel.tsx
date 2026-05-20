@@ -12,7 +12,7 @@ export function MonthPanel({
 }) {
   return (
     <div className="flex h-full items-center">
-      <div className="grid w-full grid-cols-4 gap-2">
+      <div className="grid w-full grid-cols-3 gap-2">
         {Array.from({ length: 12 }, (_, month) => {
           const active = selected.year === year && selected.month === month
           const disabled = isMonthInFuture(year, month)

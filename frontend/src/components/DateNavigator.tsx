@@ -38,38 +38,27 @@ function ArrowButton({
 
 function Panel({
   title,
-  caption,
-  captionActive = false,
   onPrev,
   onNext,
   nextDisabled = false,
   children,
 }: {
   title: string
-  caption: string
-  /** When true the picker is the one that drives the Delays table — its caption is emphasised. */
-  captionActive?: boolean
   onPrev: () => void
   onNext: () => void
   nextDisabled?: boolean
   children: ReactNode
 }) {
   return (
-    <div className="flex flex-1 flex-col gap-3 p-5">
+    <div className="flex flex-col gap-3 p-5">
       <div className="flex items-center justify-between gap-2">
         <ArrowButton dir="prev" onClick={onPrev} />
         <span className="text-sm font-medium text-zinc-800 dark:text-zinc-100">{title}</span>
         <ArrowButton dir="next" onClick={onNext} disabled={nextDisabled} />
       </div>
-      <div className="flex-1">{children}</div>
-      <div
-        className={[
-          'border-t border-zinc-100 pt-3 text-center text-xs dark:border-zinc-800',
-          captionActive ? 'font-medium text-brand' : 'text-zinc-400 dark:text-zinc-500',
-        ].join(' ')}
-      >
-        {caption}
-      </div>
+      {/* Pinned to the day grid's natural height (header + 6 rows) so the card keeps the same height
+          across granularities. The month/week panels fill it via their own h-full. */}
+      <div className="h-64">{children}</div>
     </div>
   )
 }
@@ -95,9 +84,10 @@ export function DateNavigator({
   const [weekMonth, setWeekMonth] = useState<MonthSel>({ year: selMonth.year, month: selMonth.month })
   const [dayMonth, setDayMonth] = useState<MonthSel>({ year: selMonth.year, month: selMonth.month })
 
-  // The pickers form a chain: choosing a value snaps every other picker to the period that
-  // contains it — coarser pickers downwards (which month/week is shown), finer pickers upwards
-  // (which week/month is shown *and* highlighted as selected).
+  // Only one picker is shown at a time, but choosing a value still snaps the hidden ones to the
+  // period that contains it, so switching granularity lands on a coherent month/week/day. Coarser
+  // pickers move downwards (which month/week is shown), finer pickers upwards (which week/month is
+  // shown *and* highlighted as selected).
   function pickMonth(month: number) {
     const sel = { year: monthYear, month }
     onSelectMonth(sel)
@@ -128,23 +118,21 @@ export function DateNavigator({
   const monthIsFuture = (m: MonthSel) => isMonthInFuture(m.year, m.month)
 
   return (
-    <div className="flex flex-col divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-900">
-      <Panel
-        title={String(monthYear)}
-        caption={granularity === 'months' ? 'Select a month' : 'Browse months'}
-        captionActive={granularity === 'months'}
-        onPrev={() => setMonthYear((y) => y - 1)}
-        onNext={() => setMonthYear((y) => y + 1)}
-        nextDisabled={isYearInFuture(monthYear + 1)}
-      >
-        <MonthPanel year={monthYear} selected={selMonth} onSelect={pickMonth} />
-      </Panel>
+    <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+      {granularity === 'months' && (
+        <Panel
+          title={String(monthYear)}
+          onPrev={() => setMonthYear((y) => y - 1)}
+          onNext={() => setMonthYear((y) => y + 1)}
+          nextDisabled={isYearInFuture(monthYear + 1)}
+        >
+          <MonthPanel year={monthYear} selected={selMonth} onSelect={pickMonth} />
+        </Panel>
+      )}
 
-      {granularity !== 'months' && (
+      {granularity === 'weeks' && (
         <Panel
           title={monthName(weekMonth.year, weekMonth.month)}
-          caption={granularity === 'weeks' ? 'Select a week' : 'Browse weeks'}
-          captionActive={granularity === 'weeks'}
           onPrev={() => setWeekMonth((m) => shiftMonth(m, -1))}
           onNext={() => setWeekMonth((m) => shiftMonth(m, 1))}
           nextDisabled={monthIsFuture(shiftMonth(weekMonth, 1))}
@@ -156,8 +144,6 @@ export function DateNavigator({
       {granularity === 'days' && (
         <Panel
           title={monthName(dayMonth.year, dayMonth.month)}
-          caption="Select a day"
-          captionActive
           onPrev={() => setDayMonth((m) => shiftMonth(m, -1))}
           onNext={() => setDayMonth((m) => shiftMonth(m, 1))}
           nextDisabled={monthIsFuture(shiftMonth(dayMonth, 1))}

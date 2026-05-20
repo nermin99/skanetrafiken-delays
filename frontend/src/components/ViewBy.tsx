@@ -31,7 +31,7 @@ export function ViewBy({
               aria-pressed={active}
               onClick={() => onChange(value)}
               className={[
-                'flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors',
+                'flex items-center gap-1.5 px-3 sm:gap-2 sm:px-4 py-2 text-sm font-medium transition-colors',
                 i > 0 ? 'border-l border-zinc-300 dark:border-zinc-700' : '',
                 active
                   ? 'bg-brand text-white'

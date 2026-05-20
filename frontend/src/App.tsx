@@ -69,7 +69,7 @@ function App() {
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-[1126px] space-y-10 px-6 py-8">
+      <main className="mx-auto max-w-[1126px] space-y-10 px-4 py-8 sm:px-6">
         <Section title="Select stations">
           <StationPicker
             stationA={stationA}
