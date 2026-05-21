@@ -322,7 +322,7 @@ const handler = async (event: any) => {
     if (event?.MOCK_RESPONSE) break
   }
 
-  console.info(`Found ${eligibleDelayedJourneys.length} delayed journeys in total.`)
+  console.info(`### Found ${eligibleDelayedJourneys.length} delayed journeys in total. ###`)
   if (eligibleDelayedJourneys.length === 0) {
     return {
       statusCode: 200,
@@ -423,8 +423,8 @@ const checkAgainstExistingDelays = async (candidates: any[]): Promise<any[]> => 
     {
       TableName: DYNAMODB_TABLE_NAME,
       IndexName: DYNAMODB_PARTITION_DATE_INDEX,
-      KeyConditionExpression: 'partition = :p AND #date BETWEEN :start AND :end',
-      ExpressionAttributeNames: { '#date': 'date' },
+      KeyConditionExpression: '#partition = :p AND #date BETWEEN :start AND :end',
+      ExpressionAttributeNames: { '#partition': 'partition', '#date': 'date' },
       ExpressionAttributeValues: { ':p': 'DELAY', ':start': dates[0], ':end': dates[dates.length - 1] },
     }
   )
