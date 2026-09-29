@@ -33,6 +33,11 @@ interface StationPoint {
 
 const stationPoints: StationPoint[] = [
   {
+    point: '9021012081216000',
+    station: 'Lund C',
+    country: 'sweden',
+  },
+  {
     point: '9021012031031000',
     station: 'Burlöv',
     country: 'sweden',

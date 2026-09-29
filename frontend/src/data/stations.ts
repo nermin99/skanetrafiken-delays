@@ -1,4 +1,5 @@
 export const STATIONS = [
+  'Lund C',
   'Burlöv',
   'Malmö C',
   'Malmö Triangeln',
